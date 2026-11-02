@@ -1,0 +1,19 @@
+{
+  "name": "MizanTech | ميزان تك",
+  "short_name": "MizanTech",
+  "description": "تطبيق محاسبي ذكي لإدارة حساباتك ومشروعك بسهولة",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f9d58",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2830/2830284.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

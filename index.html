@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MizanTech | ميزان تك</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f9d58">
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ================= إخفاء شعار Netlify (CSS) ================= */
+#netlify-badge, a[href*="netlify.com"], iframe[src*="netlify.com"], div[class*="netlify-badge"] { 
+    display: none !important; 
+    visibility: hidden !important; 
+    opacity: 0 !important; 
+    height: 0 !important;
+    width: 0 !important;
+    pointer-events: none !important;
+}
+
+/* ================= المتغيرات ================= */
+:root{
+  --primary:#0f9d58; --primary-dark:#0b7a44; --primary-light:#e6f7ee;
+  --bg:#f4f7fb; --card:#ffffff; --text:#111827; --muted:#6b7280;
+  --border:#e5e7eb; --danger:#ef4444; --warning:#f59e0b; --info:#3b82f6;
+  --sidebar:#0b1220; --sidebar-hover:#1a2538; --radius:16px;
+  --shadow:0 4px 24px rgba(15,23,42,.07);
+  --wa:#25D366;
+}
+[data-theme="dark"]{
+  --bg:#070d17; --card:#101a2b; --text:#e5edf7; --muted:#8ba0b8;
+  --border:#1f2d44; --primary-light:#0d2b1c; --sidebar:#050a13;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--text);transition:.25s}
+button,input,select,textarea{font-family:inherit;font-size:14px}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.arabic{font-family:'Amiri',serif}
+
+/* ================= شاشة الدخول ================= */
+.auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(circle at 20% 20%,#0f9d58 0%,#0b7a44 40%,#052e1c 100%);
+  position:relative;overflow:hidden}
+.auth-screen::before,.auth-screen::after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.06)}
+.auth-screen::before{width:500px;height:500px;top:-180px;left:-150px}
+.auth-screen::after{width:380px;height:380px;bottom:-120px;right:-100px}
+.auth-card{background:var(--card);width:100%;max-width:440px;padding:36px 30px;border-radius:26px;
+  box-shadow:0 30px 80px rgba(0,0,0,.35);position:relative;z-index:2}
+.auth-card .logo{font-size:52px;text-align:center;line-height:1}
+.auth-card h1{font-size:26px;text-align:center;margin:8px 0 4px;color:var(--primary);font-weight:800}
+.auth-card .sub{text-align:center;color:var(--muted);font-size:13.5px;margin-bottom:22px}
+.tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:20px}
+.tabs button{flex:1;padding:10px;border:none;background:transparent;border-radius:9px;cursor:pointer;
+  font-weight:700;color:var(--muted);transition:.2s}
+.tabs button.active{background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+/* ================= الحقول والأزرار ================= */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;text-align:right}
+.field label{font-size:13px;font-weight:700;color:var(--muted)}
+.field input,.field select,.field textarea{padding:12px 14px;border:1.5px solid var(--border);border-radius:11px;
+  background:var(--card);color:var(--text);outline:none;transition:.2s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.btn{padding:11px 20px;border:1px solid var(--border);background:var(--card);color:var(--text);
+  border-radius:11px;cursor:pointer;font-weight:700;transition:.18s;display:inline-flex;
+  align-items:center;gap:7px;justify-content:center;white-space:nowrap}
+.btn:hover{background:var(--bg);transform:translateY(-1px)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 6px 18px rgba(15,157,88,.3)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-wa{background:var(--wa);border-color:var(--wa);color:#fff}
+.btn-wa:hover{background:#1ea952}
+.btn-danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn-outline{background:transparent;border:1.5px solid var(--primary);color:var(--primary)}
+.btn-outline:hover{background:var(--primary-light)}
+.btn-sm{padding:7px 13px;font-size:13px;border-radius:9px}
+.btn-block{width:100%;padding:14px}
+.btn-icon{border:none;background:transparent;cursor:pointer;font-size:16px;padding:7px 9px;border-radius:9px;
+  color:var(--muted);transition:.15s}
+.btn-icon:hover{background:var(--bg);color:var(--text)}
+.btn-icon.danger:hover{background:#fee2e2;color:var(--danger)}
+
+/* ================= الهيكل ================= */
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:var(--sidebar);color:#cbd5e1;display:flex;flex-direction:column;
+  position:fixed;inset-block:0;right:0;z-index:60;transition:transform .28s cubic-bezier(.4,0,.2,1)}
+.sidebar-brand{padding:22px 20px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sidebar-brand .b-logo{font-size:26px}
+.sidebar-brand h2{font-size:17px;color:#fff;font-weight:800}
+.sidebar-brand small{font-size:11px;color:#64748b;display:block}
+.nav{flex:1;padding:14px 10px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 15px;border-radius:11px;cursor:pointer;
+  font-size:14.5px;font-weight:700;color:#94a3b8;margin-bottom:4px;transition:.16s;
+  border:none;background:none;width:100%;text-align:right}
+.nav-item:hover{background:var(--sidebar-hover);color:#e2e8f0}
+.nav-item.active{background:var(--primary);color:#fff;box-shadow:0 8px 20px rgba(15,157,88,.35)}
+.nav-item span.ic{font-size:18px}
+.sidebar-foot{padding:14px;border-top:1px solid rgba(255,255,255,.06)}
+.trial-box{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:12px;margin-bottom:10px}
+.trial-box .t-label{font-size:11.5px;color:#fbbf24;font-weight:700;margin-bottom:5px}
+.trial-box .t-bar{height:7px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden}
+.trial-box .t-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:6px;transition:.4s}
+.trial-box .t-text{font-size:11px;color:#94a3b8;margin-top:5px}
+
+.main{flex:1;margin-right:250px;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:13px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  position:sticky;top:0;z-index:40;backdrop-filter:blur(12px)}
+.topbar h2{font-size:19px;font-weight:800}
+.topbar .tools{display:flex;align-items:center;gap:10px}
+.biz-badge{background:var(--primary-light);color:var(--primary-dark);padding:8px 15px;border-radius:22px;font-size:13px;font-weight:800}
+.menu-btn{display:none;font-size:23px;background:none;border:none;cursor:pointer;color:var(--text)}
+.content{padding:24px;flex:1}
+.page{display:none;animation:fade .28s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ================= الكروت ================= */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow);margin-bottom:20px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.card-head h3{font-size:16.5px;font-weight:800}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow);position:relative;overflow:hidden;transition:.2s}
+.stat:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.09)}
+.stat::after{content:'';position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:var(--primary)}
+.stat.out::after{background:var(--danger)} .stat.bal::after{background:var(--info)} .stat.debt::after{background:var(--warning)}
+.stat .s-label{font-size:13px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.stat .s-value{font-size:24px;font-weight:900}
+.stat .s-sub{font-size:12px;color:var(--muted);margin-top:5px}
+.grid-2{display:grid;grid-template-columns:1.35fr 1fr;gap:20px}
+@media(max-width:900px){.grid-2{grid-template-columns:1fr}}
+
+/* ================= الرسم البياني ================= */
+.chart{display:flex;align-items:flex-end;gap:10px;height:210px;padding-top:10px}
+.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%}
+.chart-col .bars{flex:1;display:flex;align-items:flex-end;gap:3px;width:100%;justify-content:center}
+.bar{width:14px;border-radius:5px 5px 0 0;min-height:3px;transition:.4s}
+.bar.in{background:var(--primary)} .bar.out{background:var(--danger)}
+.chart-label{font-size:11px;color:var(--muted);margin-top:8px}
+.legend{display:flex;gap:18px;font-size:12px;color:var(--muted);margin-top:12px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-inline-end:5px}
+.legend .in{background:var(--primary)} .legend .out{background:var(--danger)}
+
+/* ================= الجداول ================= */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:600px}
+thead th{background:var(--bg);padding:13px;text-align:right;font-size:12.5px;color:var(--muted);font-weight:800;white-space:nowrap}
+tbody td{padding:12px 13px;border-top:1px solid var(--border);white-space:nowrap}
+tbody tr:hover{background:var(--bg)}
+.tag{padding:4px 11px;border-radius:20px;font-size:11.5px;font-weight:800;display:inline-block}
+.tag.in{background:#dcfce7;color:#15803d} .tag.out{background:#fee2e2;color:#b91c1c}
+.tag.warn{background:#fef3c7;color:#b45309} .tag.ok{background:#dcfce7;color:#15803d} .tag.info{background:#dbeafe;color:#1d4ed8}
+
+/* ================= بطاقات مصغرة ================= */
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:15px}
+.mini-card{border:1px solid var(--border);border-radius:14px;padding:17px;background:var(--card);transition:.18s}
+.mini-card:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+.mc-top{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--primary-light);color:var(--primary-dark);
+  display:grid;place-items:center;font-weight:900;font-size:17px}
+.mc-name{font-weight:800;font-size:14.5px}
+.mc-phone{font-size:12px;color:var(--muted)}
+.mc-balance{font-size:17px;font-weight:900;margin:7px 0}
+.mc-actions{display:flex;gap:7px;margin-top:9px}
+.empty{text-align:center;padding:40px 14px;color:var(--muted);font-size:13.5px}
+.empty .ico{font-size:40px;display:block;margin-bottom:9px;opacity:.6}
+
+/* ================= النوافذ ================= */
+.overlay{position:fixed;inset:0;background:rgba(7,13,23,.65);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:18px;z-index:100}
+.modal{background:var(--card);border-radius:20px;width:100%;max-width:580px;max-height:90vh;
+  display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,.4);animation:pop .24s ease}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-size:17.5px;font-weight:800}
+.modal-body{padding:22px 24px;overflow-y:auto}
+.modal-foot{padding:17px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-start}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.form-grid .full{grid-column:1/-1}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr}}
+.items-head{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
+.items-head span{font-weight:800;font-size:14px}
+
+.item-row{display:flex; flex-direction:column; gap:8px; padding:14px; border:1px solid var(--border); border-radius:12px; margin-bottom:12px; background:var(--bg); position:relative;}
+.item-row .row-top { display:flex; gap:8px; }
+.item-row .row-top input { flex:1; padding:11px; border:1px solid var(--border); border-radius:9px; background:var(--card); }
+.item-row .row-bottom { display:flex; gap:8px; align-items:center; }
+.item-row .row-bottom input { flex:1; padding:11px; border:1px solid var(--border); border-radius:9px; background:var(--card); }
+.total-row{margin-top:15px;padding:14px;background:var(--primary-light);border-radius:11px;text-align:left;font-size:16px;font-weight:800;color:var(--primary-dark)}
+
+/* ================= الإشعارات ================= */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);
+  background:#0f172a;color:#fff;padding:13px 24px;border-radius:13px;font-size:14px;
+  font-weight:700;z-index:200;transition:.35s;box-shadow:0 14px 36px rgba(0,0,0,.35);
+  max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--primary)} .toast.err{background:var(--danger)}
+
+/* ================= الاشتراك ================= */
+.pricing-hero{text-align:center;margin-bottom:28px}
+.pricing-hero h2{font-size:26px;font-weight:900;margin-bottom:8px}
+.pricing-hero p{color:var(--muted);font-size:15px;max-width:560px;margin:0 auto}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:880px;margin:0 auto}
+.plan{border:2px solid var(--border);border-radius:20px;padding:28px 24px;background:var(--card);
+  position:relative;transition:.22s;display:flex;flex-direction:column}
+.plan.featured{border-color:var(--primary);box-shadow:0 16px 44px rgba(15,157,88,.18);transform:scale(1.02)}
+.plan .badge{position:absolute;top:-13px;right:24px;background:var(--primary);color:#fff;
+  padding:5px 15px;border-radius:20px;font-size:11.5px;font-weight:800}
+.plan h3{font-size:19px;font-weight:800;margin-bottom:5px}
+.plan .desc{font-size:13px;color:var(--muted);margin-bottom:18px}
+.plan .amount{font-size:36px;font-weight:900;color:var(--primary);line-height:1}
+.plan .amount small{font-size:14px;font-weight:600;color:var(--muted)}
+.plan .per{font-size:13px;color:var(--muted);margin-bottom:20px}
+.plan ul{list-style:none;margin-bottom:22px;flex:1}
+.plan ul li{padding:8px 0;font-size:13.5px;display:flex;gap:8px;align-items:flex-start}
+.plan ul li::before{content:'✓';color:var(--primary);font-weight:900;flex-shrink:0}
+.toggle-bill{display:flex;justify-content:center;gap:10px;margin-bottom:26px;align-items:center}
+.toggle-bill span{font-size:13.5px;font-weight:700;color:var(--muted)}
+.toggle-bill .switch{width:52px;height:28px;background:var(--border);border-radius:20px;
+  position:relative;cursor:pointer;transition:.25s;border:none}
+.toggle-bill .switch.on{background:var(--primary)}
+.toggle-bill .switch::after{content:'';position:absolute;top:3px;right:3px;width:22px;height:22px;
+  background:#fff;border-radius:50%;transition:.25s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.toggle-bill .switch.on::after{right:27px}
+
+/* ================= التواصل ================= */
+.contact-hero{background:linear-gradient(135deg,#0f9d58,#0b7a44);border-radius:20px;padding:36px 28px;
+  color:#fff;margin-bottom:24px;text-align:center;position:relative;overflow:hidden}
+.contact-hero::before{content:'';position:absolute;width:220px;height:220px;border-radius:50%;
+  background:rgba(255,255,255,.08);top:-90px;left:-70px}
+.contact-hero .ch-avatar{width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.2);
+  display:grid;place-items:center;font-size:42px;margin:0 auto 14px;border:4px solid rgba(255,255,255,.3)}
+.contact-hero h2{font-size:24px;font-weight:900;margin-bottom:4px}
+.contact-hero .role{font-size:14px;opacity:.9;margin-bottom:16px}
+.contact-hero .phone-txt{font-size:15px;font-weight:700;margin-bottom:14px;letter-spacing:1px}
+.contact-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.contact-links a,.contact-links button{background:rgba(255,255,255,.18);color:#fff;
+  border:1px solid rgba(255,255,255,.3);padding:11px 22px;border-radius:12px;font-weight:700;
+  font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;
+  gap:8px;transition:.2s;backdrop-filter:blur(6px)}
+.contact-links a:hover,.contact-links button:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
+.limit-banner{background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #f59e0b;
+  border-radius:14px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;
+  justify-content:space-between;gap:14px;flex-wrap:wrap}
+.limit-banner .lb-text{font-size:14px;font-weight:700;color:#92400e}
+.limit-banner .lb-text b{font-size:18px}
+.limit-banner .lb-btn{background:#f59e0b;color:#fff;border:none;padding:10px 20px;
+  border-radius:10px;font-weight:800;cursor:pointer;font-size:13.5px;transition:.2s}
+.limit-banner .lb-btn:hover{background:#d97706}
+
+/* ================= صفحة التسبيح ================= */
+.tasbeeh-main{background:linear-gradient(135deg,#0f9d58,#0b7a44,#064e3b);border-radius:24px;padding:34px 24px;text-align:center;color:#fff;position:relative;overflow:hidden;margin-bottom:20px;}
+.tasbeeh-main::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,.05);top:-140px;right:-100px}
+.tasbeeh-main::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.04);bottom:-80px;left:-60px}
+.tasbeeh-current{font-size:12px;color:#bbf7d0;font-weight:700;letter-spacing:2px;margin-bottom:8px;position:relative;z-index:1}
+.tasbeeh-dhikr{font-family:'Amiri',serif;font-size:28px;font-weight:700;line-height:1.6;margin-bottom:18px;position:relative;z-index:1;text-shadow:0 2px 8px rgba(0,0,0,.2)}
+.tasbeeh-count{font-size:82px;font-weight:900;line-height:1;position:relative;z-index:1;text-shadow:0 4px 20px rgba(0,0,0,.3);transition:.2s}
+.tasbeeh-count.bump{transform:scale(1.12);color:#fde047}
+.tasbeeh-target{font-size:13px;color:#bbf7d0;margin-top:8px;position:relative;z-index:1}
+.tasbeeh-progress{margin:18px auto 0;max-width:280px;height:8px;background:rgba(255,255,255,.15);border-radius:10px;overflow:hidden;position:relative;z-index:1}
+.tasbeeh-fill{height:100%;background:linear-gradient(90deg,#fde047,#f59e0b);border-radius:10px;transition:.3s}
+.tasbeeh-btn{width:96px;height:96px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,#fde047,#f59e0b);color:#0f172a;font-size:44px;font-weight:900;margin:24px auto 0;display:grid;place-items:center;box-shadow:0 12px 30px rgba(245,158,11,.5);transition:.15s;position:relative;z-index:1;user-select:none}
+.tasbeeh-btn:active{transform:scale(.93)}
+.tasbeeh-btn:hover{box-shadow:0 16px 40px rgba(245,158,11,.7)}
+.adhkar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.dhikr-card{border:2px solid var(--border);border-radius:14px;padding:16px;background:var(--card);cursor:pointer;transition:.18s;text-align:center}
+.dhikr-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.dhikr-card.active{border-color:var(--primary);background:var(--primary-light);box-shadow:0 6px 20px rgba(15,157,88,.2)}
+.dhikr-card .dc-text{font-family:'Amiri',serif;font-size:17px;font-weight:700;line-height:1.5;margin-bottom:8px}
+.dhikr-card .dc-count{font-size:13px;color:var(--muted);font-weight:700}
+.dhikr-card.active .dc-count{color:var(--primary-dark)}
+.tasbeeh-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px}
+.ts-stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+.ts-stat .ts-icon{font-size:28px;margin-bottom:6px}
+.ts-stat .ts-value{font-size:22px;font-weight:900;color:var(--primary)}
+.ts-stat .ts-label{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* ================= صفحة التنبيهات ================= */
+.alert-item{display:flex;align-items:center;justify-content:space-between;padding:15px 4px;border-bottom:1px solid var(--border);gap:14px}
+.alert-item:last-child{border-bottom:none}
+.alert-info{flex:1;min-width:0}
+.alert-info .a-title{font-weight:800;font-size:14.5px;margin-bottom:4px}
+.alert-info .a-desc{font-size:12.5px;color:var(--muted);line-height:1.5}
+.switch-toggle{width:48px;height:26px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;border:none;transition:.25s;flex-shrink:0}
+.switch-toggle.on{background:var(--primary)}
+.switch-toggle::after{content:'';position:absolute;top:3px;right:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+.switch-toggle.on::after{right:25px}
+.alert-num{width:70px;padding:8px 10px;border:1.5px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);text-align:center;font-weight:700}
+
+/* ================= نافذة التذكير الديني ================= */
+.reminder-modal{max-width:460px;text-align:center;background:linear-gradient(160deg,#0f5132,#0b3d26);color:#fff;border:none}
+.reminder-icon{font-size:52px;margin-bottom:8px}
+.reminder-title{font-size:19px;font-weight:900;margin-bottom:16px;color:#fde047}
+.reminder-dhikr{font-family:'Amiri',serif;font-size:24px;font-weight:700;line-height:1.7;padding:20px 16px;background:rgba(255,255,255,.09);border-radius:16px;border:1px solid rgba(255,255,255,.15);margin-bottom:14px}
+.reminder-hint{font-size:13px;color:#bbf7d0;line-height:1.7;margin-bottom:20px;padding:0 8px}
+.reminder-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.reminder-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:11px 20px;border-radius:11px;font-weight:700;cursor:pointer;font-size:13.5px;transition:.2s;display:inline-flex;align-items:center;gap:7px}
+.reminder-btn:hover{background:rgba(255,255,255,.28)}
+.reminder-btn.primary{background:#fde047;color:#0b3d26;border-color:#fde047}
+.reminder-btn.primary:hover{background:#facc15}
+
+/* ================= زر واتساب عائم ================= */
+.wa-float{position:fixed;bottom:90px;left:20px;width:58px;height:58px;background:var(--wa);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 8px 24px rgba(37,211,102,.5);z-index:90;text-decoration:none;transition:.2s;animation:wa-pulse 2s infinite}
+.wa-float:hover{transform:scale(1.1)}
+@keyframes wa-pulse{0%,100%{box-shadow:0 8px 24px rgba(37,211,102,.5)} 50%{box-shadow:0 8px 32px rgba(37,211,102,.8)}}
+
+/* ================= الجوال ================= */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:70;justify-content:space-around;box-shadow:0 -4px 20px rgba(0,0,0,.06);overflow-x:auto}
+.bottom-nav button{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:10px;font-weight:700;padding:6px 4px;border-radius:10px;transition:.15s;flex:1;min-width:56px}
+.bottom-nav button.active{color:var(--primary);background:var(--primary-light)}
+.bottom-nav button .ic{font-size:19px}
+@media(max-width:900px){
+  .sidebar{transform:translateX(100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-right:0;padding-bottom:80px}
+  .bottom-nav{display:flex}
+  .menu-btn{display:block}
+  .content{padding:16px}
+  .topbar{padding:12px 16px}
+  .topbar h2{font-size:16px}
+  .biz-badge{display:none}
+  .wa-float{bottom:100px;width:52px;height:52px;font-size:24px}
+  .tasbeeh-dhikr{font-size:22px}
+  .tasbeeh-count{font-size:64px}
+  .tasbeeh-btn{width:84px;height:84px;font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== شاشة الدخول ==================== -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="logo">⚖️</div>
+    <h1>MizanTech</h1>
+    <p class="sub">ميزان تك - حسابك في جوالك</p>
+    <div class="tabs">
+      <button id="tabLogin" class="active" onclick="switchAuth('login')">تسجيل الدخول</button>
+      <button id="tabRegister" onclick="switchAuth('register')">حساب جديد</button>
+    </div>
+
+    <div id="loginForm">
+      <div class="field"><label>البريد الإلكتروني</label><input id="loginEmail" type="email" placeholder="you@example.com"></div>
+      <div class="field"><label>كلمة المرور</label><input id="loginPass" type="password" placeholder="••••••••"></div>
+      <button class="btn btn-primary btn-block" onclick="doLogin()">دخول</button>
+    </div>
+
+    <div id="registerForm" class="hidden">
+      <div class="field"><label>الاسم الكامل</label><input id="regName" placeholder="اسمك"></div>
+      <div class="field"><label>البريد الإلكتروني</label><input id="regEmail" type="email" placeholder="you@example.com"></div>
+      <div class="field"><label>كلمة المرور (6 أحرف على الأقل)</label><input id="regPass" type="password" placeholder="••••••••"></div>
+      <button class="btn btn-primary btn-block" onclick="doRegister()">إنشاء الحساب</button>
+    </div>
+
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border);text-align:center">
+      <p style="font-size:12px;color:var(--muted)">تصميم وتطوير المهندس <b>نشوان البدري</b></p>
+      <p style="font-size:12.5px;margin-top:8px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+        <a href="https://wa.me/967771713275?text=مرحبًا%20مهندس%20نشوان" target="_blank" style="color:var(--primary);text-decoration:none;font-weight:700">💬 771713275</a>
+        <a href="tel:+967771713275" style="color:var(--primary);text-decoration:none;font-weight:700">📞 اتصال</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== التطبيق ==================== -->
+<div id="app" class="app hidden">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="b-logo">⚖️</span>
+      <div><h2>MizanTech</h2><small>Cloud Edition</small></div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span> الرئيسية</button>
+      <button class="nav-item hidden" id="navAdmin" data-page="admin" onclick="navigate('admin')" style="color:#fbbf24;"><span class="ic">👑</span> لوحة التحكم (الأدمن)</button>
+      
+      <button class="nav-item" data-page="cash" onclick="navigate('cash')"><span class="ic">💵</span> دفتر النقدية</button>
+      <button class="nav-item" data-page="contacts" onclick="navigate('contacts')"><span class="ic">👥</span> العملاء والموردون</button>
+      <button class="nav-item" data-page="invoices" onclick="navigate('invoices')"><span class="ic">🧾</span> الفواتير</button>
+      <button class="nav-item" data-page="inventory" onclick="navigate('inventory')"><span class="ic">📦</span> المخزون</button>
+      <button class="nav-item" data-page="employees" onclick="navigate('employees')"><span class="ic">👨‍💼</span> الموظفون</button>
+      <button class="nav-item" data-page="reports" onclick="navigate('reports')"><span class="ic">📊</span> التقارير الشاملة</button>
+      <button class="nav-item" data-page="tasbeeh" onclick="navigate('tasbeeh')"><span class="ic">📿</span> التسبيح والاستغفار</button>
+      <button class="nav-item" data-page="alerts" onclick="navigate('alerts')"><span class="ic">🔔</span> شروط التنبيهات</button>
+      <button class="nav-item" data-page="subscription" onclick="navigate('subscription')"><span class="ic">💎</span> الاشتراك</button>
+      <button class="nav-item" data-page="contact" onclick="navigate('contact')"><span class="ic">💬</span> تواصل مع المصمم</button>
+      <button class="nav-item" data-page="settings" onclick="navigate('settings')"><span class="ic">⚙️</span> الإعدادات</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="trial-box" id="trialBox"></div>
+      <button class="nav-item" onclick="logout()"><span class="ic">🚪</span> تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <h2 id="pageTitle">الرئيسية</h2>
+      </div>
+      <div class="tools">
+        <span class="biz-badge" id="bizBadge">مشروعي</span>
+        <button class="btn-icon" title="المظهر" onclick="toggleTheme()">🌙</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- الرئيسية -->
+      <section id="page-dashboard" class="page active">
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h3>حركة آخر 7 أيام</h3></div>
+            <div class="chart" id="chart7"></div>
+            <div class="legend"><span><i class="in"></i>وارد</span><span><i class="out"></i>صادر</span></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>آخر العمليات</h3></div>
+            <div class="list" id="recentTx"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- لوحة تحكم الأدمن -->
+      <section id="page-admin" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3>👑 إدارة المستخدمين</h3>
+            <button class="btn btn-primary btn-sm" onclick="loadAdminData()">🔄 تحديث</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>الاسم</th><th>البريد</th><th>الخطة</th><th>العمليات</th><th>الحالة</th><th>إجراء</th></tr></thead>
+              <tbody id="adminTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- النقدية -->
+      <section id="page-cash" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3>دفتر النقدية</h3>
+            <div class="actions">
+              <select id="cashFilter" onchange="renderCash()" style="padding:10px 13px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);color:var(--text)">
+                <option value="all">الكل</option><option value="in">وارد</option><option value="out">صادر</option>
+              </select>
+              <button class="btn btn-primary" onclick="openTransactionModal()">+ عملية</button>
+            </div>
+          </div>
+          <div class="stats-grid" id="cashStats"></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>الوصف</th><th>المبلغ</th><th></th></tr></thead>
+            <tbody id="cashTable"></tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- العملاء -->
+      <section id="page-contacts" class="page">
+        <div class="card">
+          <div class="card-head"><h3>العملاء والموردون</h3>
+            <button class="btn btn-primary" onclick="openContactModal()">+ جهة</button></div>
+          <div class="mini-grid" id="contactsGrid"></div>
+        </div>
+      </section>
+
+      <!-- الفواتير -->
+      <section id="page-invoices" class="page">
+        <div class="card">
+          <div class="card-head"><h3>الفواتير</h3>
+            <button class="btn btn-primary" onclick="openInvoiceModal()">+ فاتورة</button></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>#</th><th>الجهة</th><th>التاريخ</th><th>الإجمالي</th><th>الحالة</th><th></th></tr></thead>
+            <tbody id="invoicesTable"></tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- المخزون -->
+      <section id="page-inventory" class="page">
+        <div class="card">
+          <div class="card-head"><h3>المخزون</h3>
+            <button class="btn btn-primary" onclick="openProductModal()">+ صنف</button></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>الصنف</th><th>الكمية</th><th>البيع</th><th>التكلفة</th><th>القيمة</th><th>الحالة</th><th></th></tr></thead>
+            <tbody id="inventoryTable"></tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- الموظفون -->
+      <section id="page-employees" class="page">
+        <div class="card">
+          <div class="card-head"><h3>الموظفون</h3>
+            <button class="btn btn-primary" onclick="openEmployeeModal()">+ موظف</button></div>
+          <div class="mini-grid" id="employeesGrid"></div>
+        </div>
+      </section>
+
+      <!-- التقارير -->
+      <section id="page-reports" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3>📊 التقارير المالية الشاملة</h3>
+            <div class="actions">
+              <button class="btn btn-primary" onclick="printFullReport()">🖨️ طباعة التقرير الشامل</button>
+            </div>
+          </div>
+          
+          <div class="form-grid" style="margin-bottom:20px; padding:15px; background:var(--bg); border-radius:12px;">
+            <div class="field">
+              <label>من تاريخ</label>
+              <input type="date" id="reportStart" onchange="renderReports()">
+            </div>
+            <div class="field">
+              <label>إلى تاريخ</label>
+              <input type="date" id="reportEnd" onchange="renderReports()">
+            </div>
+          </div>
+
+          <div class="stats-grid" id="reportStats"></div>
+          
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-head"><h3>ملخص قائمة الدخل</h3></div>
+              <table style="min-width:auto">
+                <tbody>
+                  <tr><td>إجمالي الوارد (المبيعات والإيرادات)</td><td style="color:var(--primary); font-weight:800" id="repInc">0</td></tr>
+                  <tr><td>إجمالي الصادر (المصروفات والمشتريات)</td><td style="color:var(--danger); font-weight:800" id="repExp">0</td></tr>
+                  <tr style="background:var(--primary-light)"><td style="font-weight:800">صافي الربح / الخسارة</td><td style="font-weight:900; font-size:18px" id="repNet">0</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>حركة الحسابات (خلال الفترة)</h3></div>
+              <div class="table-wrap" style="max-height:300px; overflow-y:auto;">
+                <table>
+                  <thead><tr><th>التاريخ</th><th>البيان</th><th>مدين (صادر)</th><th>دائن (وارد)</th></tr></thead>
+                  <tbody id="reportTxTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- التسبيح -->
+      <section id="page-tasbeeh" class="page">
+        <div class="tasbeeh-stats">
+          <div class="ts-stat"><div class="ts-icon">📿</div><div class="ts-value" id="tsTotal">0</div><div class="ts-label">إجمالي التسبيحات</div></div>
+          <div class="ts-stat"><div class="ts-icon">🎯</div><div class="ts-value" id="tsToday">0</div><div class="ts-label">تسبيحات اليوم</div></div>
+          <div class="ts-stat"><div class="ts-icon">🔥</div><div class="ts-value" id="tsStreak">0</div><div class="ts-label">أيام متتالية</div></div>
+          <div class="ts-stat"><div class="ts-icon">🤲</div><div class="ts-value" id="tsIstighfar">0</div><div class="ts-label">استغفارات</div></div>
+        </div>
+
+        <div class="tasbeeh-main">
+          <div class="tasbeeh-current" id="tasbeehLabel">الذكر الحالي</div>
+          <div class="tasbeeh-dhikr" id="tasbeehText">سُبْحَانَ اللَّهِ</div>
+          <div class="tasbeeh-count" id="tasbeehCount">0</div>
+          <div class="tasbeeh-target" id="tasbeehTarget">الهدف: 33</div>
+          <div class="tasbeeh-progress"><div class="tasbeeh-fill" id="tasbeehFill"></div></div>
+          <button class="tasbeeh-btn" onclick="incrementTasbeeh()">+</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>الأذكار</h3>
+            <div class="actions">
+              <button class="btn btn-sm" onclick="resetCurrentTasbeeh()">تصفير الحالي</button>
+              <button class="btn btn-sm" onclick="resetAllTasbeeh()">تصفير الكل</button>
+            </div>
+          </div>
+          <div class="adhkar-grid" id="adhkarGrid"></div>
+        </div>
+      </section>
+
+      <!-- التنبيهات -->
+      <section id="page-alerts" class="page">
+        <div class="card">
+          <div class="card-head">
+            <h3>🔔 شروط التنبيهات والتذكيرات</h3>
+            <div class="actions">
+              <button class="btn btn-sm btn-outline" onclick="testReminder('istighfar')">تجربة استغفار</button>
+              <button class="btn btn-sm btn-outline" onclick="testReminder('tasbeeh')">تجربة تسبيح</button>
+              <button class="btn btn-sm btn-outline" onclick="testReminder('hamd')">تجربة حمد</button>
+            </div>
+          </div>
+          <p class="muted" style="margin-bottom:16px;font-size:13.5px">
+            حدد متى تريد أن يظهر لك تذكير ديني (استغفار، تسبيح، حمد، صلاة على النبي...).
+          </p>
+
+          <div id="alertsList"></div>
+
+          <div style="margin-top:20px;padding:16px;background:var(--primary-light);border-radius:12px">
+            <div style="font-size:13.5px;font-weight:700;color:var(--primary-dark);margin-bottom:10px">
+              ⚡ بعد كل عدد من العمليات
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <span class="muted" style="font-size:13px">أظهر تذكيرًا بعد كل</span>
+              <input type="number" id="alertEveryN" min="1" max="100" value="5" class="alert-num">
+              <span class="muted" style="font-size:13px">عملية</span>
+              <button class="btn btn-sm btn-primary" onclick="saveAlertEveryN()">حفظ</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- الاشتراك -->
+      <section id="page-subscription" class="page">
+        <div class="pricing-hero">
+          <h2>اختر خطتك</h2>
+          <p>ابدأ مجانًا مع 20 عملية، ثم اشترك للاستمرار في استخدام كل المزايا</p>
+        </div>
+        <div class="toggle-bill">
+          <span>شهري</span>
+          <button class="switch" id="billingSwitch" onclick="toggleBilling()"></button>
+          <span>سنوي <span class="tag ok" style="font-size:10px">وفّر 17%</span></span>
+        </div>
+        <div class="plans">
+          <div class="plan" id="planMonthly">
+            <h3>الخطة الشهرية</h3>
+            <p class="desc">مناسبة للمشاريع الصغيرة</p>
+            <div class="amount">1,000 <small>ريال</small></div>
+            <p class="per">شهريًا</p>
+            <ul>
+              <li>عمليات غير محدودة</li><li>فواتير غير محدودة</li>
+              <li>إدارة المخزون</li><li>إدارة الموظفين</li>
+              <li>تقارير متقدمة</li><li>دعم فني</li>
+            </ul>
+            <button class="btn btn-primary btn-block" onclick="subscribe('monthly')">اشترك شهريًا</button>
+          </div>
+          <div class="plan featured" id="planYearly">
+            <div class="badge">الأكثر توفيرًا</div>
+            <h3>الخطة السنوية</h3>
+            <p class="desc">وفّر 17% عن الدفع الشهري</p>
+            <div class="amount">12,000 <small>ريال</small></div>
+            <p class="per">سنويًا</p>
+            <ul>
+              <li>كل مزايا الخطة الشهرية</li><li>خصم 17%</li>
+              <li>أولوية في الدعم</li><li>نسخ احتياطي تلقائي</li>
+            </ul>
+            <button class="btn btn-primary btn-block" onclick="subscribe('yearly')">اشترك سنويًا</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- التواصل -->
+      <section id="page-contact" class="page">
+        <div class="contact-hero">
+          <div class="ch-avatar">👨‍💻</div>
+          <h2>المهندس نشوان البدري</h2>
+          <p class="role">مصمم ومطور تطبيق MizanTech</p>
+          <div class="phone-txt">📞 771713275</div>
+          <div class="contact-links">
+            <a href="https://wa.me/967771713275?text=مرحبًا%20مهندس%20نشوان،%20أريد%20الاستفسار%20عن%20MizanTech" target="_blank">💬 واتساب</a>
+            <a href="tel:+967771713275">📞 اتصال مباشر</a>
+            <button onclick="window.open('https://wa.me/967771713275?text=أريد%20الاشتراك%20في%20MizanTech','_blank')">💳 طلب اشتراك</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>أرسل رسالة مباشرة</h3></div>
+          <div class="form-grid">
+            <div class="field"><label>اسمك</label><input id="msgName" placeholder="الاسم"></div>
+            <div class="field"><label>بريدك</label><input id="msgEmail" type="email" placeholder="you@example.com"></div>
+            <div class="field full"><label>الرسالة</label><textarea id="msgText" rows="4" placeholder="اكتب استفسارك..."></textarea></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" onclick="sendMessage()">إرسال للوحة</button>
+            <button class="btn btn-wa" onclick="sendWhatsAppMessage()">💬 إرسال عبر واتساب</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- الإعدادات -->
+      <section id="page-settings" class="page">
+        <div class="card">
+          <div class="card-head"><h3>إعدادات المشروع</h3></div>
+          <div class="form-grid">
+            <div class="field"><label>اسم المشروع</label><input id="setName"></div>
+            <div class="field"><label>العملة</label><input id="setCurrency"></div>
+          </div>
+          <button class="btn btn-primary" onclick="saveSettings()">حفظ</button>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>النسخ الاحتياطي</h3></div>
+          <div class="actions">
+            <button class="btn" onclick="exportData()">⬇️ تصدير JSON</button>
+            <button class="btn btn-danger" onclick="resetData()">🗑️ حذف كل البيانات</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>للتواصل والدعم</h3></div>
+          <p style="font-size:13.5px;margin-bottom:12px">المهندس نشوان البدري — مطوّر التطبيق</p>
+          <div class="actions">
+            <a href="https://wa.me/967771713275" target="_blank" class="btn btn-wa">💬 واتساب: 771713275</a>
+            <a href="tel:+967771713275" class="btn">📞 اتصال</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- شريط التنقل السفلي -->
+<nav class="bottom-nav hidden" id="bottomNav">
+  <button data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span>الرئيسية</button>
+  <button data-page="cash" onclick="navigate('cash')"><span class="ic">💵</span>النقدية</button>
+  <button data-page="invoices" onclick="navigate('invoices')"><span class="ic">🧾</span>الفواتير</button>
+  <button data-page="reports" onclick="navigate('reports')"><span class="ic">📊</span>التقارير</button>
+  <button data-page="tasbeeh" onclick="navigate('tasbeeh')"><span class="ic">📿</span>التسبيح</button>
+  <button data-page="alerts" onclick="navigate('alerts')"><span class="ic">🔔</span>التنبيهات</button>
+  <button data-page="subscription" onclick="navigate('subscription')"><span class="ic">💎</span>الاشتراك</button>
+  <button data-page="contact" onclick="navigate('contact')"><span class="ic">💬</span>تواصل</button>
+</nav>
+
+<!-- زر واتساب عائم -->
+<a href="https://wa.me/967771713275?text=مرحبًا%20مهندس%20نشوان" target="_blank" class="wa-float hidden" id="waFloat" title="تواصل عبر واتساب">💬</a>
+
+<div id="overlay" class="overlay hidden">
+  <div class="modal" id="mainModal">
+    <div class="modal-head"><h3 id="modalTitle">عنوان</h3><button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- نافذة التذكير الديني (منفصلة) -->
+<div id="reminderOverlay" class="overlay hidden">
+  <div class="modal reminder-modal" id="reminderModal">
+    <div class="modal-body">
+      <div class="reminder-icon" id="reminderIcon">🤲</div>
+      <div class="reminder-title" id="reminderTitle">تذكير</div>
+      <div class="reminder-dhikr arabic" id="reminderDhikr">أستغفر الله</div>
+      <div class="reminder-hint" id="reminderHint"></div>
+      <div class="reminder-actions">
+        <button class="reminder-btn primary" onclick="acceptReminder()">📿 أضف للتسبيح</button>
+        <button class="reminder-btn" onclick="closeReminder()">لاحقًا</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<!-- ==================== السكربتات ==================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, setDoc, getDoc, getDocs,
+  addDoc, updateDoc, deleteDoc, query, where, onSnapshot,
+  enableIndexedDbPersistence
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged, updateProfile
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBlaWceELg_C66xKSNtvdoiOPHI0dfQCkM",
+  authDomain: "mizantech.firebaseapp.com",
+  projectId: "mizantech",
+  storageBucket: "mizantech.firebasestorage.app",
+  messagingSenderId: "1030540348490",
+  appId: "1:1030540348490:web:430dcbc34015a103c42ab3",
+  measurementId: "G-RXB55G7JE4"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+enableIndexedDbPersistence(db).catch((err) => {});
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => console.log(err));
+  });
+}
+
+const FREE_LIMIT = 20;
+const PRICE_MONTHLY = 1000;
+const PRICE_YEARLY  = 12000;
+const WA_NUMBER = '967771713275';
+const DISPLAY_PHONE = '771713275';
+
+const ADHKAR = [
+  { id: 'subhan',    text: 'سُبْحَانَ اللَّهِ',                              target: 33 },
+  { id: 'hamd',      text: 'الْحَمْدُ لِلَّهِ',                              target: 33 },
+  { id: 'akbar',     text: 'اللَّهُ أَكْبَرُ',                              target: 34 },
+  { id: 'tahlil',    text: 'لَا إِلَهَ إِلَّا اللَّهُ',                      target: 100 },
+  { id: 'istighfar', text: 'أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ',         target: 100 },
+  { id: 'hawla',     text: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',       target: 100 },
+  { id: 'subhanBi',  text: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ',                  target: 100 },
+  { id: 'salah',     text: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ',                target: 100 }
+];
+
+let currentUser = null;
+let userDoc     = null;
+let isAdminUser = false;
+let data = {
+  transactions: [], contacts: [], invoices: [], products: [], employees: [],
+  settings: { businessName: 'مشروعي', currency: 'ر.ي', theme: 'light' },
+  tasbeeh:  { total: 0, today: 0, lastDate: null, streak: 0, byDhikr: {} },
+  alerts:   { enabled: true, afterProfit: true, afterExpense: true, morningReminder: true, eveningReminder: true, afterOperations: 5, operationsCount: 0 }
+};
+let currentDhikr = 'subhan';
+let unsubscribers = [];
+
+function toast(msg, type){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + (type || '');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2800);
+}
+function today(){ return new Date().toISOString().slice(0,10); }
+function fmt(n){ return (Number(n)||0).toLocaleString('en-US',{maximumFractionDigits:2}); }
+function money(n){ return fmt(n) + ' ' + (data.settings.currency || 'ر.ي'); }
+function openModal(title, body, footer){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalFoot').innerHTML = footer || '';
+  document.getElementById('overlay').classList.remove('hidden');
+}
+function closeModal(){ document.getElementById('overlay').classList.add('hidden'); }
+document.getElementById('overlay').addEventListener('click', e => { if(e.target.id === 'overlay') closeModal(); });
+
+window.switchAuth = function(mode){
+  const isLogin = mode === 'login';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
+  document.getElementById('registerForm').classList.toggle('hidden', isLogin);
+};
+
+window.doLogin = async function(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  if(!email || !pass) return toast('أدخل البريد وكلمة المرور','err');
+  try{ await signInWithEmailAndPassword(auth, email, pass); }
+  catch(e){ toast('خطأ في الدخول', 'err'); }
+};
+
+window.doRegister = async function(){
+  const name  = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass  = document.getElementById('regPass').value;
+  if(!name || !email || pass.length < 6) return toast('تأكد من البيانات (كلمة المرور 6 أحرف)','err');
+  try{
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      name, email, createdAt: new Date().toISOString(), operationCount: 0,
+      subscription: { plan: 'free', active: false, expiresAt: null },
+      settings: { businessName: 'مشروعي', currency: 'ر.ي', theme: 'light' },
+      tasbeeh: { total: 0, today: 0, lastDate: null, streak: 0, byDhikr: {} },
+      alerts: { enabled: true, afterProfit: true, afterExpense: true, morningReminder: true, eveningReminder: true, afterOperations: 5, operationsCount: 0 }
+    });
+    toast('تم إنشاء الحساب بنجاح','ok');
+  }catch(e){ toast('البريد مستخدم بالفعل', 'err'); }
+};
+
+window.logout = async function(){
+  unsubscribers.forEach(fn => fn()); unsubscribers = [];
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUser = user;
+    document.getElementById('authScreen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('bottomNav').classList.remove('hidden');
+    document.getElementById('waFloat').classList.remove('hidden');
+    await loadUserDoc();
+    checkAdminStatus();
+    subscribeToData();
+    applyTheme();
+    renderAll();
+    renderTasbeeh();
+    renderAlerts();
+    updateTrialUI();
+  }else{
+    currentUser = null; userDoc = null; isAdminUser = false;
+    unsubscribers.forEach(fn => fn()); unsubscribers = [];
+    document.getElementById('authScreen').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('bottomNav').classList.add('hidden');
+    document.getElementById('waFloat').classList.add('hidden');
+    document.getElementById('navAdmin').classList.add('hidden');
+  }
+});
+
+async function loadUserDoc(){
+  const snap = await getDoc(doc(db, 'users', currentUser.uid));
+  if(snap.exists()){
+    userDoc = snap.data();
+    if(userDoc.settings) data.settings = { ...data.settings, ...userDoc.settings };
+    if(userDoc.tasbeeh)  data.tasbeeh  = { ...data.tasbeeh, ...userDoc.tasbeeh };
+    if(userDoc.alerts)   data.alerts   = { ...data.alerts, ...userDoc.alerts };
+  }
+}
+
+function checkAdminStatus() {
+  isAdminUser = userDoc && userDoc.subscription && userDoc.subscription.plan === 'admin';
+  document.getElementById('navAdmin').classList.toggle('hidden', !isAdminUser);
+}
+
+function subscribeToData(){
+  unsubscribers.forEach(fn => fn()); unsubscribers = [];
+  const uid = currentUser.uid;
+
+  const userRef = doc(db, 'users', uid);
+  unsubscribers.push(onSnapshot(userRef, snap => {
+    if(snap.exists()){
+      const oldPlan = userDoc?.subscription?.plan;
+      userDoc = snap.data();
+      if(userDoc.settings) data.settings = { ...data.settings, ...userDoc.settings };
+      if(userDoc.tasbeeh)  data.tasbeeh  = { ...data.tasbeeh, ...userDoc.tasbeeh };
+      if(userDoc.alerts)   data.alerts   = { ...data.alerts, ...userDoc.alerts };
+      checkAdminStatus();
+      updateTrialUI();
+      if(oldPlan === 'free' && userDoc.subscription.active) {
+        toast('🎉 مبروك! تم تفعيل اشتراكك بنجاح.', 'ok');
+        const banner = document.getElementById('limitBanner');
+        if(banner) banner.remove();
+      }
+    }
+  }));
+
+  const qTx = query(collection(db, 'transactions'), where('uid','==',uid));
+  unsubscribers.push(onSnapshot(qTx, snap => {
+    data.transactions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderDashboard(); renderCash(); renderReports();
+  }));
+
+  const qC = query(collection(db, 'contacts'), where('uid','==',uid));
+  unsubscribers.push(onSnapshot(qC, snap => {
+    data.contacts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderContacts(); renderReports(); renderContactsOptions();
+  }));
+
+  const qI = query(collection(db, 'invoices'), where('uid','==',uid));
+  unsubscribers.push(onSnapshot(qI, snap => {
+    data.invoices = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderInvoices();
+  }));
+
+  const qP = query(collection(db, 'products'), where('uid','==',uid));
+  unsubscribers.push(onSnapshot(qP, snap => {
+    data.products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderInventory(); renderReports();
+  }));
+
+  const qE = query(collection(db, 'employees'), where('uid','==',uid));
+  unsubscribers.push(onSnapshot(qE, snap => {
+    data.employees = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderEmployees();
+  }));
+}
+
+function isSubscribed(){
+  const s = userDoc?.subscription;
+  if(!s || !s.active) return false;
+  if(s.plan === 'admin') return true;
+  if(s.expiresAt) return new Date(s.expiresAt) > new Date();
+  return true;
+}
+function canAddOperation(){
+  if(isSubscribed()) return true;
+  return (userDoc?.operationCount || 0) < FREE_LIMIT;
+}
+async function incrementOperation(){
+  if(isSubscribed()){
+    data.alerts.operationsCount = (data.alerts.operationsCount || 0) + 1;
+    await updateDoc(doc(db,'users',currentUser.uid), { 'alerts.operationsCount': data.alerts.operationsCount });
+    return;
+  }
+  userDoc.operationCount = (userDoc.operationCount || 0) + 1;
+  await updateDoc(doc(db, 'users', currentUser.uid), { operationCount: userDoc.operationCount });
+  updateTrialUI();
+  if(userDoc.operationCount >= FREE_LIMIT) showLimitBanner();
+}
+function updateTrialUI(){
+  const box = document.getElementById('trialBox');
+  if(!box || !userDoc) return;
+  if(isSubscribed()){
+    box.innerHTML = `<div class="t-label" style="color:#34d399">✅ مشترك</div>
+      <div class="t-text" style="color:#e2e8f0">خطة ${userDoc.subscription.plan === 'yearly' ? 'سنوية' : (userDoc.subscription.plan === 'admin' ? 'أدمن' : 'شهرية')} — نشطة</div>`;
+    return;
+  }
+  const used = userDoc.operationCount || 0;
+  const pct  = Math.min(100, (used / FREE_LIMIT) * 100);
+  box.innerHTML = `<div class="t-label">🎁 التجربة المجانية</div><div class="t-bar"><div class="t-fill" style="width:${pct}%"></div></div><div class="t-text">${used} / ${FREE_LIMIT} عملية</div>`;
+}
+function showLimitBanner(){
+  if(document.getElementById('limitBanner')) return;
+  const banner = document.createElement('div');
+  banner.id = 'limitBanner';
+  banner.className = 'limit-banner';
+  banner.innerHTML = `<div class="lb-text">🎉 لقد استنفدت <b>${FREE_LIMIT}</b> عملية مجانية. اشترك للاستمرار!</div><button class="lb-btn" onclick="navigate('subscription')">اشترك الآن</button>`;
+  document.querySelector('.content').insertBefore(banner, document.querySelector('.content').firstChild);
+}
+
+const PAGE_TITLES = {
+  dashboard:'الرئيسية', admin:'👑 لوحة التحكم', cash:'دفتر النقدية', contacts:'العملاء والموردون',
+  invoices:'الفواتير', inventory:'المخزون', employees:'الموظفون',
+  reports:'📊 التقارير الشاملة', tasbeeh:'📿 التسبيح والاستغفار', alerts:'🔔 شروط التنبيهات',
+  subscription:'الاشتراك', contact:'تواصل مع المصمم', settings:'الإعدادات'
+};
+window.navigate = function(page){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item[data-page]').forEach(n => n.classList.toggle('active', n.dataset.page === page));
+  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.getElementById('pageTitle').textContent = PAGE_TITLES[page] || '';
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(page === 'admin' && isAdminUser) loadAdminData();
+  if(page === 'reports'){
+    if(!document.getElementById('reportStart').value){
+      const now = new Date(); const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+      document.getElementById('reportStart').value = firstDay.toISOString().slice(0,10);
+      document.getElementById('reportEnd').value = today();
+    }
+    renderReports();
+  }
+};
+window.toggleSidebar = function(){ document.getElementById('sidebar').classList.toggle('open'); };
+function applyTheme(){ document.documentElement.setAttribute('data-theme', data.settings.theme || 'light'); }
+window.toggleTheme = async function(){
+  data.settings.theme = data.settings.theme === 'dark' ? 'light' : 'dark'; applyTheme();
+  await updateDoc(doc(db, 'users', currentUser.uid), { 'settings.theme': data.settings.theme }).catch(()=>{});
+};
+
+function totals(){ let inc = 0, exp = 0; data.transactions.forEach(t => { if(t.type === 'in') inc += Number(t.amount)||0; else exp += Number(t.amount)||0; }); return { inc, exp, balance: inc - exp }; }
+function customerDebts(){ return data.contacts.filter(c=>c.type==='customer'&&Number(c.balance)>0).reduce((s,c)=>s+Number(c.balance),0); }
+function supplierDebts(){ return data.contacts.filter(c=>c.type==='supplier'&&Number(c.balance)>0).reduce((s,c)=>s+Number(c.balance),0); }
+function contactName(id){ const c = data.contacts.find(x=>x.id===id); return c?c.name:'—'; }
+function contactOptions(){ return data.contacts.length ? data.contacts.map(c=>`<option value="${c.id}">${c.name} (${c.type==='customer'?'عميل':'مورد'})</option>`).join('') : '<option value="">— لا توجد جهات —</option>'; }
+function renderContactsOptions(){ const sel = document.getElementById('invContact'); if(sel) sel.innerHTML = contactOptions(); }
+
+window.loadAdminData = async function() {
+  if(!isAdminUser) return;
+  const tbody = document.getElementById('adminTable');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">⏳ جاري تحميل المستخدمين...</td></tr>';
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    let html = '';
+    snap.forEach(docSnap => {
+      const u = docSnap.data(); const uid = docSnap.id;
+      const isActive = u.subscription && u.subscription.active;
+      const plan = u.subscription ? u.subscription.plan : 'free';
+      let statusBadge = isActive ? '<span class="tag ok">نشط</span>' : '<span class="tag warn">مجاني/موقوف</span>';
+      let planBadge = plan === 'admin' ? '<span class="tag info">أدمن 👑</span>' : (plan === 'yearly' ? 'سنوي' : (plan === 'monthly' ? 'شهري' : 'مجاني'));
+      html += `<tr><td style="font-weight:700">${u.name || 'مستخدم'}</td><td>${u.email}</td><td>${planBadge}</td><td>${u.operationCount || 0}</td><td>${statusBadge}</td><td>${plan !== 'admin' ? `<button class="btn btn-sm ${isActive ? 'btn-danger' : 'btn-primary'}" onclick="toggleUserSub('${uid}', ${isActive})">${isActive ? 'إيقاف' : 'تفعيل'}</button>` : '—'}</td></tr>`;
+    });
+    tbody.innerHTML = html;
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">خطأ في التحميل</td></tr>'; }
+};
+window.toggleUserSub = async function(uid, currentStatus) {
+  if(!isAdminUser) return;
+  if(!confirm('تغيير حالة اشتراك هذا المستخدم؟')) return;
+  try {
+    await updateDoc(doc(db, 'users', uid), {
+      'subscription.active': !currentStatus,
+      'subscription.plan': !currentStatus ? 'monthly' : 'free',
+      'subscription.expiresAt': !currentStatus ? new Date(Date.now() + 30*24*60*60*1000).toISOString() : null
+    });
+    toast('تم التحديث', 'ok'); loadAdminData();
+  } catch(e) { toast('فشل', 'err'); }
+};
+
+function renderAll(){
+  document.getElementById('bizBadge').textContent = data.settings.businessName || 'مشروعي';
+  renderDashboard(); renderCash(); renderContacts(); renderInvoices();
+  renderInventory(); renderEmployees(); renderReports(); renderSettingsForm();
+}
+
+function renderDashboard(){
+  const t = totals();
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat"><div class="s-label">الوارد</div><div class="s-value amount-in">${money(t.inc)}</div><div class="s-sub">${data.transactions.filter(x=>x.type==='in').length} عملية</div></div>
+    <div class="stat out"><div class="s-label">الصادر</div><div class="s-value amount-out">${money(t.exp)}</div><div class="s-sub">${data.transactions.filter(x=>x.type==='out').length} عملية</div></div>
+    <div class="stat bal"><div class="s-label">الرصيد</div><div class="s-value">${money(t.balance)}</div><div class="s-sub">الصندوق</div></div>
+    <div class="stat debt"><div class="s-label">ديون العملاء</div><div class="s-value">${money(customerDebts())}</div><div class="s-sub">مستحقة لك</div></div>`;
+  const days = []; for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); days.push(d.toISOString().slice(0,10)); }
+  const chartData = days.map(d => ({ d, in: data.transactions.filter(t=>t.date===d&&t.type==='in').reduce((s,x)=>s+Number(x.amount),0), out: data.transactions.filter(t=>t.date===d&&t.type==='out').reduce((s,x)=>s+Number(x.amount),0) }));
+  const max = Math.max(1, ...chartData.flatMap(x=>[x.in,x.out]));
+  document.getElementById('chart7').innerHTML = chartData.map(x=>`<div class="chart-col"><div class="bars"><div class="bar in" style="height:${Math.max(3,x.in/max*100)}%"></div><div class="bar out" style="height:${Math.max(3,x.out/max*100)}%"></div></div><span class="chart-label">${x.d.slice(5)}</span></div>`).join('');
+  const recent = [...data.transactions].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+  document.getElementById('recentTx').innerHTML = recent.length ? recent.map(t=>`<div class="list-item"><div class="li-main"><span class="li-title">${t.desc || t.category}</span><span class="li-sub">${t.date}</span></div><span class="li-amount ${t.type==='in'?'amount-in':'amount-out'}">${t.type==='in'?'+':'−'}${money(t.amount)}</span></div>`).join('') : `<div class="empty">لا توجد عمليات</div>`;
+}
+
+function renderCash(){
+  const filter = document.getElementById('cashFilter')?.value || 'all';
+  const t = totals();
+  document.getElementById('cashStats').innerHTML = `<div class="stat"><div class="s-label">الوارد</div><div class="s-value amount-in">${money(t.inc)}</div></div><div class="stat out"><div class="s-label">الصادر</div><div class="s-value amount-out">${money(t.exp)}</div></div><div class="stat bal"><div class="s-label">الرصيد</div><div class="s-value">${money(t.balance)}</div></div>`;
+  let list = [...data.transactions].sort((a,b)=>b.date.localeCompare(a.date));
+  if(filter !== 'all') list = list.filter(x => x.type === filter);
+  const body = document.getElementById('cashTable');
+  body.innerHTML = list.length ? list.map(t=>`<tr><td>${t.date}</td><td><span class="tag ${t.type}">${t.type==='in'?'وارد':'صادر'}</span></td><td>${t.category}</td><td>${t.desc||'—'}</td><td class="${t.type==='in'?'amount-in':'amount-out'}" style="font-weight:800">${t.type==='in'?'+':'−'}${money(t.amount)}</td><td><button class="btn-icon danger" onclick="deleteTransaction('${t.id}')">🗑</button></td></tr>`).join('') : `<tr><td colspan="6"><div class="empty">لا توجد عمليات</div></td></tr>`;
+}
+
+window.openTransactionModal = function(){
+  if(!canAddOperation()){ showLimitBanner(); return; }
+  const cats = ['مبيعات','مشتريات','رواتب','إيجار','كهرباء','مواصلات','صيانة','أخرى'];
+  openModal('عملية جديدة', `<div class="form-grid"><div class="field"><label>النوع</label><select id="txType"><option value="in">وارد</option><option value="out">صادر</option></select></div><div class="field"><label>المبلغ</label><input type="number" id="txAmount" min="0" step="0.01"></div><div class="field"><label>التصنيف</label><select id="txCategory">${cats.map(c=>`<option>${c}</option>`).join('')}</select></div><div class="field"><label>التاريخ</label><input type="date" id="txDate" value="${today()}"></div><div class="field full"><label>الوصف</label><input id="txDesc"></div></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveTransaction()">حفظ</button>`);
+};
+
+window.saveTransaction = async function(){
+  if(!canAddOperation()) return;
+  const amount = parseFloat(document.getElementById('txAmount').value);
+  if(!amount || amount <= 0) return toast('أدخل مبلغًا صحيحًا','err');
+  await addDoc(collection(db, 'transactions'), { uid: currentUser.uid, type: document.getElementById('txType').value, amount, category: document.getElementById('txCategory').value, date: document.getElementById('txDate').value || today(), desc: document.getElementById('txDesc').value.trim(), createdAt: new Date().toISOString() });
+  await incrementOperation(); closeModal(); toast('تم الحفظ','ok');
+};
+
+window.deleteTransaction = async function(id){ if(confirm('حذف؟')) { await deleteDoc(doc(db,'transactions',id)); toast('تم الحذف'); } };
+
+function renderContacts(){
+  const grid = document.getElementById('contactsGrid');
+  grid.innerHTML = data.contacts.length ? data.contacts.map(c=>{
+    const bal = Number(c.balance)||0; const isCust = c.type === 'customer';
+    return `<div class="mini-card"><div class="mc-top"><div class="avatar">${c.name.charAt(0)}</div><div><div class="mc-name">${c.name}</div><div class="mc-phone">${c.phone||'—'}</div></div></div><div class="mc-balance" style="color:${bal===0?'var(--muted)':(isCust?'var(--primary)':'var(--danger)')}">${bal===0?'مسدَّد':(isCust?`يدين لك ${money(bal)}`:`تدين له ${money(bal)}`)}</div><div class="mc-actions"><button class="btn btn-sm btn-primary" onclick="openPaymentModal('${c.id}')">سداد</button><button class="btn-icon danger" onclick="deleteContact('${c.id}')">🗑</button></div></div>`;
+  }).join('') : `<div class="empty">لا توجد جهات</div>`;
+}
+window.openContactModal = function(){ openModal('إضافة جهة', `<div class="form-grid"><div class="field"><label>الاسم</label><input id="cName"></div><div class="field"><label>النوع</label><select id="cType"><option value="customer">عميل</option><option value="supplier">مورد</option></select></div><div class="field"><label>الهاتف</label><input id="cPhone"></div><div class="field"><label>رصيد افتتاحي</label><input type="number" id="cBalance" value="0"></div></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveContact()">حفظ</button>`); };
+window.saveContact = async function(){ const name = document.getElementById('cName').value.trim(); if(!name) return; await addDoc(collection(db,'contacts'), { uid: currentUser.uid, name, type: document.getElementById('cType').value, phone: document.getElementById('cPhone').value.trim(), balance: parseFloat(document.getElementById('cBalance').value)||0, createdAt: new Date().toISOString() }); closeModal(); toast('تمت الإضافة'); };
+window.deleteContact = async function(id){ if(confirm('حذف؟')) { await deleteDoc(doc(db,'contacts',id)); toast('تم الحذف'); } };
+window.openPaymentModal = function(id){ const c = data.contacts.find(x=>x.id===id); if(!c) return; openModal('سداد', `<div class="form-grid"><div class="field"><label>المبلغ</label><input type="number" id="payAmount"></div><div class="field"><label>التاريخ</label><input type="date" id="payDate" value="${today()}"></div></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="savePayment('${id}')">تأكيد</button>`); };
+window.savePayment = async function(id){ if(!canAddOperation()) return; const c = data.contacts.find(x=>x.id===id); const amount = parseFloat(document.getElementById('payAmount').value); if(!amount) return; await updateDoc(doc(db,'contacts',id), { balance: (Number(c.balance)||0) - amount }); await addDoc(collection(db,'transactions'), { uid: currentUser.uid, type: c.type === 'customer' ? 'in' : 'out', amount, date: document.getElementById('payDate').value || today(), category: c.type === 'customer' ? 'تحصيل' : 'سداد', desc: 'سداد ' + c.name, createdAt: new Date().toISOString() }); await incrementOperation(); closeModal(); toast('تم السداد'); };
+
+function renderInvoices(){
+  const body = document.getElementById('invoicesTable'); const list = [...data.invoices].sort((a,b)=>b.date.localeCompare(a.date));
+  body.innerHTML = list.length ? list.map(inv=>`<tr><td>#${inv.number}</td><td>${contactName(inv.contactId)}</td><td>${inv.date}</td><td>${money(inv.total)}</td><td><span class="tag ${inv.status==='paid'?'ok':'warn'}">${inv.status==='paid'?'مدفوعة':'آجلة'}</span></td><td><button class="btn-icon" onclick="printInvoice('${inv.id}')">🖨</button><button class="btn-icon danger" onclick="deleteInvoice('${inv.id}')">🗑</button></td></tr>`).join('') : `<tr><td colspan="6"><div class="empty">لا توجد فواتير</div></td></tr>`;
+}
+window.openInvoiceModal = function(){ if(!canAddOperation()) return; openModal('فاتورة جديدة', `<div class="form-grid"><div class="field"><label>الجهة</label><select id="invContact">${contactOptions()}</select></div><div class="field"><label>التاريخ</label><input type="date" id="invDate" value="${today()}"></div><div class="field full"><label>الدفع</label><select id="invStatus"><option value="paid">مدفوعة</option><option value="unpaid">آجلة</option></select></div></div><div class="items-head"><span>الأصناف</span><button class="btn btn-sm" onclick="addItemRow()">+ صنف</button></div><div id="invoiceItems"></div><div class="total-row">الإجمالي: <strong id="invTotal">0</strong></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveInvoice()">حفظ</button>`); addItemRow(); };
+window.addItemRow = function(){ const wrap = document.getElementById('invoiceItems'); const row = document.createElement('div'); row.className = 'item-row'; row.innerHTML = `<div class="row-top"><input class="i-desc" placeholder="وصف الصنف"></div><div class="row-bottom"><input class="i-qty" type="number" min="1" value="1" placeholder="الكمية"><input class="i-price" type="number" min="0" step="0.01" value="0" placeholder="السعر"><button class="btn btn-sm btn-danger" onclick="this.closest('.item-row').remove();recalcInvoice()">حذف</button></div>`; row.querySelectorAll('input').forEach(i => i.addEventListener('input', recalcInvoice)); wrap.appendChild(row); recalcInvoice(); };
+window.recalcInvoice = function(){ let total = 0; document.querySelectorAll('#invoiceItems .item-row').forEach(r=>{ total += (parseFloat(r.querySelector('.i-qty').value)||0) * (parseFloat(r.querySelector('.i-price').value)||0); }); const el = document.getElementById('invTotal'); if(el) el.textContent = money(total); return total; };
+window.saveInvoice = async function(){ if(!canAddOperation()) return; const contactId = document.getElementById('invContact').value; if(!contactId) return; const items = []; document.querySelectorAll('#invoiceItems .item-row').forEach(r=>{ const desc = r.querySelector('.i-desc').value.trim(); const qty = parseFloat(r.querySelector('.i-qty').value)||0; const price = parseFloat(r.querySelector('.i-price').value)||0; if(desc && qty > 0) items.push({desc, qty, price}); }); if(!items.length) return; const total = items.reduce((s,i)=>s+i.qty*i.price,0); const status = document.getElementById('invStatus').value; const number = 1000 + data.invoices.length + 1; const date = document.getElementById('invDate').value || today(); await addDoc(collection(db,'invoices'), { uid: currentUser.uid, number, contactId, date, status, items, total, createdAt: new Date().toISOString() }); if(status === 'paid'){ await addDoc(collection(db,'transactions'), { uid: currentUser.uid, type:'in', amount:total, category:'مبيعات', date, desc:'فاتورة #'+number, createdAt:new Date().toISOString() }); } else { const c = data.contacts.find(x=>x.id===contactId); if(c) await updateDoc(doc(db,'contacts',contactId), { balance: (Number(c.balance)||0)+total }); } await incrementOperation(); closeModal(); toast('تم إنشاء الفاتورة'); };
+window.deleteInvoice = async function(id){ if(confirm('حذف؟')) { await deleteDoc(doc(db,'invoices',id)); toast('تم الحذف'); } };
+window.printInvoice = function(id){ const inv = data.invoices.find(i=>i.id===id); if(!inv) return; const rows = inv.items.map((it,i)=>`<tr><td>${i+1}</td><td>${it.desc}</td><td>${it.qty}</td><td>${fmt(it.price)}</td><td>${fmt(it.qty*it.price)}</td></tr>`).join(''); const win = window.open('','','width=700,height=800'); win.document.write(`<html dir="rtl"><head><meta charset="utf-8"><title>فاتورة #${inv.number}</title><style>body{font-family:Tahoma;padding:30px}h2{color:#0f9d58}table{width:100%;border-collapse:collapse;margin-top:14px}th,td{border:1px solid #ddd;padding:9px;text-align:right}th{background:#f3f5f9}.total{margin-top:16px;text-align:left;font-size:18px;font-weight:bold;color:#0f9d58}</style></head><body><h2>${data.settings.businessName}</h2><p>فاتورة #${inv.number} — ${inv.date} — ${contactName(inv.contactId)}</p><table><thead><tr><th>#</th><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>${rows}</tbody></table><div class="total">الإجمالي: ${money(inv.total)}</div></body></html>`); win.document.close(); win.focus(); setTimeout(()=>win.print(),300); };
+
+function renderInventory(){
+  const body = document.getElementById('inventoryTable');
+  body.innerHTML = data.products.length ? data.products.map(p=>{ const low = Number(p.qty) <= 5; return `<tr><td style="font-weight:700">${p.name}</td><td>${p.qty}</td><td>${money(p.price)}</td><td>${money(p.cost)}</td><td>${money(p.qty*p.price)}</td><td><span class="tag ${low?'warn':'ok'}">${low?'منخفض':'متوفر'}</span></td><td><button class="btn-icon" onclick="openProductModal('${p.id}')">✏️</button><button class="btn-icon danger" onclick="deleteProduct('${p.id}')">🗑</button></td></tr>`; }).join('') : `<tr><td colspan="7"><div class="empty">لا توجد أصناف</div></td></tr>`;
+}
+window.openProductModal = function(id){ const p = id ? data.products.find(x=>x.id===id) : null; openModal(p?'تعديل صنف':'إضافة صنف', `<div class="form-grid"><div class="field full"><label>اسم الصنف</label><input id="pName" value="${p?p.name:''}"></div><div class="field"><label>الكمية</label><input type="number" id="pQty" min="0" value="${p?p.qty:0}"></div><div class="field"><label>سعر البيع</label><input type="number" id="pPrice" min="0" step="0.01" value="${p?p.price:0}"></div><div class="field full"><label>سعر التكلفة</label><input type="number" id="pCost" min="0" step="0.01" value="${p?p.cost:0}"></div></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveProduct('${id||''}')">حفظ</button>`); };
+window.saveProduct = async function(id){ const name = document.getElementById('pName').value.trim(); if(!name) return; const payload = { name, qty: parseFloat(document.getElementById('pQty').value)||0, price: parseFloat(document.getElementById('pPrice').value)||0, cost: parseFloat(document.getElementById('pCost').value)||0 }; if(id) await updateDoc(doc(db,'products',id), payload); else await addDoc(collection(db,'products'), { uid:currentUser.uid, ...payload, createdAt:new Date().toISOString() }); closeModal(); toast('تم الحفظ'); };
+window.deleteProduct = async function(id){ if(confirm('حذف؟')) { await deleteDoc(doc(db,'products',id)); toast('تم الحذف'); } };
+
+function renderEmployees(){
+  const grid = document.getElementById('employeesGrid');
+  grid.innerHTML = data.employees.length ? data.employees.map(e=>`<div class="mini-card"><div class="mc-top"><div class="avatar">${e.name.charAt(0)}</div><div><div class="mc-name">${e.name}</div><div class="mc-phone">${e.position||'موظف'}</div></div></div><div class="mc-balance" style="color:var(--info)">الراتب: ${money(e.salary)}</div><div class="mc-actions"><button class="btn btn-sm" onclick="paySalary('${e.id}')">صرف</button><button class="btn-icon danger" onclick="deleteEmployee('${e.id}')">🗑</button></div></div>`).join('') : `<div class="empty">لا يوجد موظفون</div>`;
+}
+window.openEmployeeModal = function(){ openModal('إضافة موظف', `<div class="form-grid"><div class="field"><label>الاسم</label><input id="eName"></div><div class="field"><label>الوظيفة</label><input id="ePos"></div><div class="field"><label>الهاتف</label><input id="ePhone"></div><div class="field"><label>الراتب</label><input type="number" id="eSalary" min="0" step="0.01" value="0"></div></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveEmployee()">حفظ</button>`); };
+window.saveEmployee = async function(){ const name = document.getElementById('eName').value.trim(); if(!name) return; await addDoc(collection(db,'employees'), { uid: currentUser.uid, name, position: document.getElementById('ePos').value.trim(), phone: document.getElementById('ePhone').value.trim(), salary: parseFloat(document.getElementById('eSalary').value)||0, createdAt: new Date().toISOString() }); closeModal(); toast('تمت الإضافة'); };
+window.paySalary = async function(id){ if(!canAddOperation()) return; const e = data.employees.find(x=>x.id===id); if(!e || !confirm(`صرف راتب ${e.name}؟`)) return; await addDoc(collection(db,'transactions'), { uid: currentUser.uid, type:'out', amount:e.salary, category:'رواتب', date: today(), desc:'راتب '+e.name, createdAt:new Date().toISOString() }); await incrementOperation(); toast('تم الصرف'); };
+window.deleteEmployee = async function(id){ if(confirm('حذف؟')) { await deleteDoc(doc(db,'employees',id)); toast('تم الحذف'); } };
+
+function renderReports(){
+  const start = document.getElementById('reportStart')?.value; const end = document.getElementById('reportEnd')?.value;
+  let txs = data.transactions; if(start && end) txs = txs.filter(t => t.date >= start && t.date <= end);
+  let inc = 0, exp = 0; txs.forEach(t => { if(t.type === 'in') inc += Number(t.amount)||0; else exp += Number(t.amount)||0; }); const net = inc - exp;
+  document.getElementById('reportStats').innerHTML = `<div class="stat"><div class="s-label">الوارد</div><div class="s-value amount-in">${money(inc)}</div></div><div class="stat out"><div class="s-label">الصادر</div><div class="s-value amount-out">${money(exp)}</div></div><div class="stat bal"><div class="s-label">الصافي</div><div class="s-value">${money(net)}</div></div>`;
+  document.getElementById('repInc').textContent = money(inc); document.getElementById('repExp').textContent = money(exp);
+  const netEl = document.getElementById('repNet'); netEl.textContent = money(net); netEl.style.color = net >= 0 ? 'var(--primary)' : 'var(--danger)';
+  const sortedTxs = [...txs].sort((a,b) => b.date.localeCompare(a.date)); const tableBody = document.getElementById('reportTxTable');
+  tableBody.innerHTML = sortedTxs.length === 0 ? '<tr><td colspan="4" style="text-align:center;">لا توجد حركات</td></tr>' : sortedTxs.map(t => `<tr><td>${t.date}</td><td>${t.desc || t.category}</td><td class="amount-out">${t.type === 'out' ? money(t.amount) : '-'}</td><td class="amount-in">${t.type === 'in' ? money(t.amount) : '-'}</td></tr>`).join('');
+}
+window.printFullReport = function(){
+  const start = document.getElementById('reportStart').value; const end = document.getElementById('reportEnd').value;
+  if(!start || !end) return; const txs = data.transactions.filter(t => t.date >= start && t.date <= end);
+  let inc = 0, exp = 0; txs.forEach(t => { if(t.type === 'in') inc += Number(t.amount)||0; else exp += Number(t.amount)||0; }); const net = inc - exp;
+  const rows = txs.map(t => `<tr><td>${t.date}</td><td>${t.desc || t.category}</td><td style="color:red">${t.type === 'out' ? money(t.amount) : '-'}</td><td style="color:green">${t.type === 'in' ? money(t.amount) : '-'}</td></tr>`).join('');
+  const win = window.open('', '', 'width=800,height=900');
+  win.document.write(`<html dir="rtl"><head><meta charset="utf-8"><title>تقرير مالي</title><style>body{font-family:Tahoma, Arial; padding:40px; color:#111}.header{text-align:center; border-bottom:2px solid #0f9d58; padding-bottom:20px; margin-bottom:30px}.header h1{color:#0f9d58; margin:0 0 10px}.header p{margin:5px 0; font-size:14px; color:#555}.summary{display:flex; justify-content:space-between; margin-bottom:30px}.box{border:1px solid #ddd; padding:15px; border-radius:8px; width:30%; text-align:center}.box h3{margin:0 0 10px; font-size:16px; color:#555}.box .val{font-size:22px; font-weight:bold}.in{color:#0f9d58} .out{color:#ef4444} .net{color:#3b82f6}table{width:100%; border-collapse:collapse; margin-top:20px}th,td{border:1px solid #ddd; padding:10px; text-align:right; font-size:13px}th{background:#f3f5f9}.footer{text-align:center; margin-top:40px; font-size:12px; color:#888}</style></head><body><div class="header"><h1>${data.settings.businessName}</h1><p>تقرير مالي شامل</p><p>من: ${start} — إلى: ${end}</p></div><div class="summary"><div class="box"><h3>الإيرادات</h3><div class="val in">${money(inc)}</div></div><div class="box"><h3>المصروفات</h3><div class="val out">${money(exp)}</div></div><div class="box"><h3>صافي الربح</h3><div class="val net">${money(net)}</div></div></div><table><thead><tr><th>التاريخ</th><th>البيان</th><th>الصادر</th><th>الوارد</th></tr></thead><tbody>${rows || '<tr><td colspan="4" style="text-align:center">لا توجد حركات</td></tr>'}</tbody></table><div class="footer">MizanTech — ${new Date().toLocaleString('ar-EG')}</div></body></html>`);
+  win.document.close(); win.focus(); setTimeout(()=>win.print(), 300);
+};
+
+function renderTasbeeh(){
+  const grid = document.getElementById('adhkarGrid');
+  grid.innerHTML = ADHKAR.map(d=>{ const count = (data.tasbeeh.byDhikr && data.tasbeeh.byDhikr[d.id]) || 0; return `<div class="dhikr-card ${d.id===currentDhikr?'active':''}" onclick="selectDhikr('${d.id}')"><div class="dc-text">${d.text}</div><div class="dc-count">${count} / ${d.target}</div></div>`; }).join('');
+  const curr = ADHKAR.find(d=>d.id===currentDhikr); const currCount = (data.tasbeeh.byDhikr && data.tasbeeh.byDhikr[currentDhikr]) || 0;
+  document.getElementById('tasbeehLabel').textContent = 'الذكر الحالي'; document.getElementById('tasbeehText').textContent = curr.text; document.getElementById('tasbeehCount').textContent = currCount; document.getElementById('tasbeehTarget').textContent = `الهدف: ${curr.target}`;
+  document.getElementById('tasbeehFill').style.width = Math.min(100, (currCount / curr.target) * 100) + '%';
+  document.getElementById('tsTotal').textContent = fmt(data.tasbeeh.total || 0); document.getElementById('tsToday').textContent = fmt(data.tasbeeh.today || 0); document.getElementById('tsStreak').textContent = data.tasbeeh.streak || 0; document.getElementById('tsIstighfar').textContent = fmt((data.tasbeeh.byDhikr && data.tasbeeh.byDhikr.istighfar) || 0);
+}
+window.selectDhikr = function(id){ currentDhikr = id; renderTasbeeh(); };
+window.incrementTasbeeh = async function(){
+  if(!currentUser) return; const curr = ADHKAR.find(d=>d.id===currentDhikr);
+  data.tasbeeh.byDhikr = data.tasbeeh.byDhikr || {}; data.tasbeeh.byDhikr[currentDhikr] = (data.tasbeeh.byDhikr[currentDhikr] || 0) + 1; data.tasbeeh.total = (data.tasbeeh.total || 0) + 1;
+  const todayStr = today(); if(data.tasbeeh.lastDate !== todayStr){ const yest = new Date(); yest.setDate(yest.getDate()-1); const yestStr = yest.toISOString().slice(0,10); if(data.tasbeeh.lastDate === yestStr) data.tasbeeh.streak = (data.tasbeeh.streak || 0) + 1; else data.tasbeeh.streak = 1; data.tasbeeh.today = 1; data.tasbeeh.lastDate = todayStr; } else { data.tasbeeh.today = (data.tasbeeh.today || 0) + 1; }
+  const countEl = document.getElementById('tasbeehCount'); countEl.classList.add('bump'); setTimeout(()=>countEl.classList.remove('bump'), 150); renderTasbeeh();
+  updateDoc(doc(db,'users',currentUser.uid), { 'tasbeeh.byDhikr': data.tasbeeh.byDhikr, 'tasbeeh.total': data.tasbeeh.total, 'tasbeeh.today': data.tasbeeh.today, 'tasbeeh.lastDate':data.tasbeeh.lastDate, 'tasbeeh.streak': data.tasbeeh.streak }).catch(()=>{});
+  if(data.tasbeeh.byDhikr[currentDhikr] === curr.target) toast(`🎉 أتممت ${curr.target}`, 'ok');
+};
+window.resetCurrentTasbeeh = async function(){ if(confirm('تصفير هذا الذكر؟')) { data.tasbeeh.byDhikr[currentDhikr] = 0; renderTasbeeh(); await updateDoc(doc(db,'users',currentUser.uid), { 'tasbeeh.byDhikr': data.tasbeeh.byDhikr }); } };
+window.resetAllTasbeeh = async function(){ if(confirm('تصفير الكل؟')) { data.tasbeeh.byDhikr = {}; data.tasbeeh.today = 0; renderTasbeeh(); await updateDoc(doc(db,'users',currentUser.uid), { 'tasbeeh.byDhikr': {}, 'tasbeeh.today': 0 }); } };
+
+function renderAlerts(){
+  const list = document.getElementById('alertsList');
+  const items = [ { key:'enabled', title:'تفعيل التذكيرات' }, { key:'afterProfit', title:'الحمد بعد الربح 💰' }, { key:'afterExpense', title:'الاستغفار بعد المصروف 💸' }, { key:'morningReminder', title:'تذكير الصباح 🌅' }, { key:'eveningReminder', title:'تذكير المساء 🌇' } ];
+  list.innerHTML = items.map(it=>`<div class="alert-item"><div class="alert-info"><div class="a-title">${it.title}</div></div><button class="switch-toggle ${data.alerts[it.key]?'on':''}" onclick="toggleAlert('${it.key}')"></button></div>`).join('');
+  document.getElementById('alertEveryN').value = data.alerts.afterOperations || 5;
+}
+window.toggleAlert = async function(key){ data.alerts[key] = !data.alerts[key]; renderAlerts(); await updateDoc(doc(db,'users',currentUser.uid), { ['alerts.'+key]: data.alerts[key] }).catch(()=>{}); };
+window.saveAlertEveryN = async function(){ const n = parseInt(document.getElementById('alertEveryN').value) || 5; data.alerts.afterOperations = n; await updateDoc(doc(db,'users',currentUser.uid), { 'alerts.afterOperations': n }); toast(`تنبيه كل ${n} عمليات`,'ok'); };
+
+const REMINDERS = { istighfar: { icon:'🤲', title:'استغفار', dhikr:'أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ', dhikrId:'istighfar' }, tasbeeh: { icon:'📿', title:'تسبيح', dhikr:'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', dhikrId:'subhanBi' }, hamd: { icon:'✨', title:'الحمد لله', dhikr:'الْحَمْدُ لِلَّهِ', dhikrId:'hamd' }, morning: { icon:'🌅', title:'أذكار الصباح', dhikr:'أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ', dhikrId:'subhan' }, evening: { icon:'🌇', title:'أذكار المساء', dhikr:'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ', dhikrId:'tahlil' } };
+let pendingReminderDhikrId = null;
+function showReminder(type){ if(!data.alerts.enabled) return; const r = REMINDERS[type]; if(!r) return; pendingReminderDhikrId = r.dhikrId; document.getElementById('reminderIcon').textContent = r.icon; document.getElementById('reminderTitle').textContent = r.title; document.getElementById('reminderDhikr').textContent = r.dhikr; document.getElementById('reminderOverlay').classList.remove('hidden'); }
+window.closeReminder = function(){ document.getElementById('reminderOverlay').classList.add('hidden'); pendingReminderDhikrId = null; };
+window.acceptReminder = function(){ if(pendingReminderDhikrId){ currentDhikr = pendingReminderDhikrId; incrementTasbeeh(); } closeReminder(); navigate('tasbeeh'); };
+window.testReminder = function(type){ showReminder(type); };
+
+let billingYearly = false;
+window.toggleBilling = function(){ billingYearly = !billingYearly; document.getElementById('billingSwitch').classList.toggle('on', billingYearly); };
+window.subscribe = function(plan){ const price = plan === 'monthly' ? PRICE_MONTHLY : PRICE_YEARLY; const label = plan === 'monthly' ? 'شهريًا' : 'سنويًا'; openModal('الاشتراك', `<p>الخطة: ${plan==='monthly'?'شهرية':'سنوية'} بمبلغ ${fmt(price)} ريال.</p><div style="margin-top:16px;text-align:center;font-size:20px;font-weight:900;color:var(--primary);">📞 ${DISPLAY_PHONE}</div><div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><a href="https://wa.me/${WA_NUMBER}?text=أريد%20الاشتراك" target="_blank" class="btn btn-wa">💬 واتساب</a><a href="tel:+${WA_NUMBER}" class="btn btn-primary">📞 اتصال</a></div>`, `<button class="btn" onclick="closeModal()">إغلاق</button>`); };
+
+window.sendMessage = async function(){ const name = document.getElementById('msgName').value.trim(); const text = document.getElementById('msgText').value.trim(); if(!name || !text) return; await addDoc(collection(db,'messages'), { name, email: document.getElementById('msgEmail').value.trim(), text, uid: currentUser?.uid, createdAt: new Date().toISOString() }); document.getElementById('msgName').value = ''; document.getElementById('msgEmail').value = ''; document.getElementById('msgText').value = ''; toast('تم الإرسال'); };
+window.sendWhatsAppMessage = function(){ const name = document.getElementById('msgName').value.trim() || 'عميل'; const text = document.getElementById('msgText').value.trim(); if(!text) return; window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`مرحبًا مهندس نشوان، أنا ${name}\n${text}`)}`, '_blank'); };
+
+function renderSettingsForm(){ document.getElementById('setName').value = data.settings.businessName || ''; document.getElementById('setCurrency').value = data.settings.currency || ''; }
+window.saveSettings = async function(){ data.settings.businessName = document.getElementById('setName').value.trim() || 'مشروعي'; data.settings.currency = document.getElementById('setCurrency').value.trim() || 'ر.ي'; await updateDoc(doc(db,'users',currentUser.uid), { 'settings.businessName': data.settings.businessName, 'settings.currency': data.settings.currency }); document.getElementById('bizBadge').textContent = data.settings.businessName; renderAll(); toast('تم الحفظ'); };
+window.exportData = function(){ const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'MizanTech-backup-'+today()+'.json'; a.click(); };
+window.resetData = async function(){ if(!confirm('سيتم حذف جميع بياناتك نهائيًا. متأكد؟')) return; for(const col of ['transactions','contacts','invoices','products','employees']){ data[col].forEach(async item => { await deleteDoc(doc(db,col,item.id)); }); } toast('جارٍ الحذف...'); };
+</script>
+
+<!-- ==================== السكربت السحري لإخفاء Netlify ==================== -->
+<script>
+  // حذف شعار Netlify فور ظهوره في الصفحة (حتى لو تم حقنه لاحقاً)
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.addedNodes.length) {
+        mutation.addedNodes.forEach((node) => {
+          if (node.tagName === 'A' && node.href && node.href.includes('netlify.com')) {
+            node.style.display = 'none';
+            node.remove();
+          }
+          if (node.tagName === 'IFRAME' && node.src && node.src.includes('netlify.com')) {
+            node.style.display = 'none';
+            node.remove();
+          }
+        });
+      }
+    });
+  });
+  window.addEventListener('load', () => {
+    observer.observe(document.body, { childList: true, subtree: true });
+  });
+</script>
+
+</body>
+</html>
