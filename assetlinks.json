@@ -1,8 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "app.netlify.clever_gingersnap_7d91a7.twa",
-        "sha256_cert_fingerprints": ["01:50:97:E5:A5:70:D0:1C:92:74:68:8C:D7:CF:0C:EE:93:BC:44:85:AB:9F:D9:88:A6:3B:F2:F3:74:EF:C4:6F"]
-      }
-    }]
