@@ -781,7 +781,7 @@ const auth = getAuth(app);
 enableIndexedDbPersistence(db).catch((err) => {});
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(err => console.log(err));
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
   });
 }
 
