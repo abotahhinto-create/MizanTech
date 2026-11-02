@@ -2,7 +2,7 @@
   "name": "MizanTech | ميزان تك",
   "short_name": "MizanTech",
   "description": "تطبيق محاسبي ذكي لإدارة حساباتك ومشروعك بسهولة",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0f9d58",
