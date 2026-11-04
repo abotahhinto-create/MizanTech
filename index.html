@@ -125,7 +125,7 @@ tbody tr:hover td { background: var(--bg); }
     .item-row .btn-sm { grid-column: 1 / -1; background: #fee2e2; color: #991b1b; padding: 10px;}
 }
 
-/* ================= تصميم الفاتورة المطبوعة (3 تنسيقات) ================= */
+/* ================= تصميم الفاتورة المطبوعة ================= */
 .invoice-preview { background:#fff; padding:30px; border-radius:12px; max-width:800px; margin:0 auto; font-family:'Cairo',sans-serif; color: #000; transition: 0.3s; }
 .inv-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:15px; margin-bottom:20px; }
 .inv-logo { max-height:80px; max-width:200px; object-fit:contain; }
@@ -135,14 +135,14 @@ tbody tr:hover td { background: var(--bg); }
 .inv-total { text-align:left; font-size:20px; font-weight:900; margin-top:15px; }
 .inv-footer { display:flex; justify-content:space-between; margin-top:40px; padding-top:20px; }
 
-/* التنسيق الكلاسيكي (الافتراضي) */
+/* التنسيق الكلاسيكي */
 .inv-classic .inv-header { border-bottom:2px solid var(--primary); }
 .inv-classic .inv-table th { background:#f1f5f9; border:1px solid #cbd5e1; }
 .inv-classic .inv-table td { border:1px solid #cbd5e1; }
 .inv-classic .inv-total { color:var(--primary-dark); }
 .inv-classic .inv-footer { border-top:1px dashed #cbd5e1; }
 
-/* التنسيق الملكي (داكن) */
+/* التنسيق الملكي */
 .inv-royal { background: #0f172a; color: #fff; }
 .inv-royal .inv-header { border-bottom:2px solid #fbbf24; }
 .inv-royal .inv-table th { background:#1e293b; color: #fbbf24; border:1px solid #334155; }
@@ -150,7 +150,7 @@ tbody tr:hover td { background: var(--bg); }
 .inv-royal .inv-total { color:#fbbf24; }
 .inv-royal .inv-footer { border-top:1px dashed #334155; }
 
-/* التنسيق الحديث (بدون حدود) */
+/* التنسيق الحديث */
 .inv-modern .inv-header { border-bottom:none; border-right: 5px solid var(--primary); padding-right: 15px;}
 .inv-modern .inv-table th { background:var(--primary-light); color:var(--primary-dark); border:none; }
 .inv-modern .inv-table td { border-bottom: 1px solid #e2e8f0; }
@@ -461,6 +461,14 @@ tbody tr:hover td { background: var(--bg); }
             </div>
           </div>
           <button type="button" class="btn btn-primary" style="margin-top:20px; width:100%;" onclick="saveSettings()">حفظ التعديلات</button>
+          
+          <hr style="margin: 30px 0; border-color: var(--border);">
+          <div class="card-head"><h3>🧪 أدوات المطور والتجربة</h3></div>
+          <p class="muted" style="margin-bottom: 15px; font-size: 13px;">استخدم هذه الأزرار لتجربة التطبيق ببيانات وهمية، أو تنظيفه بالكامل للبدء من جديد.</p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary" onclick="loadDummyData()" style="flex: 1; background: #3b82f6;">📥 إضافة بيانات تجريبية (10 لكل قسم)</button>
+            <button type="button" class="btn btn-danger" onclick="clearAllData()" style="flex: 1;">🗑️ مسح جميع البيانات</button>
+          </div>
         </div>
       </section>
     </div>
@@ -739,7 +747,7 @@ async function saveInvoice() {
     });
     
     closeModal();
-    setTimeout(() => { viewInvoice(docRef.id); }, 500); // فتح الفاتورة تلقائياً بعد الحفظ
+    setTimeout(() => { viewInvoice(docRef.id); }, 500);
     
   } catch (error) { alert('❌ حدث خطأ أثناء الحفظ: ' + error.message); }
 }
@@ -990,6 +998,87 @@ async function saveSettings() {
 function exportToCSV(){ if(!data.transactions.length) return alert('لا يوجد بيانات'); let csv = "\uFEFFالتاريخ,النوع,التصنيف,المبلغ,البيان\n"; data.transactions.forEach(t=>{ csv += `${t.date},${t.type==='in'?'قبض':'صرف'},${t.category||'عام'},${t.amount},${t.desc||''}\n`; }); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})); a.download = 'Report.csv'; a.click(); }
 async function loadAdminData(){ const snap = await db.collection('users').get(); let h = ''; snap.forEach(d=>{ const u = d.data(); h += `<tr><td>${u.name}</td><td>${u.subscription?.plan}</td><td>${u.subscription?.active?'<span class="tag in">نشط</span>':'<span class="tag out">موقوف</span>'}</td><td><button type="button" class="btn btn-sm btn-primary" onclick="updateSub('${d.id}')">تفعيل</button></td></tr>`; }); document.getElementById('adminTable').innerHTML = h; }
 async function updateSub(id){ await db.collection('users').doc(id).update({'subscription.plan':'yearly','subscription.active':true}); alert('تم التفعيل'); loadAdminData(); }
+
+// ================= البيانات التجريبية والمسح =================
+async function loadDummyData() {
+  if (!confirm('سيتم إضافة 10 عمليات تجريبية لكل قسم (عملاء، مخزون، فواتير، إلخ). هل أنت متأكد؟')) return;
+  const uid = currentUser.uid;
+  try {
+    // 1. 10 عملاء
+    const names = ['أحمد محمد', 'شركة النور', 'علي صالح', 'مؤسسة الأمل', 'خالد عمر', 'محمد عبدالله', 'سالم أحمد', 'شركة الفهد', 'عمر ياسر', 'يوسف طه'];
+    for (let name of names) {
+      await db.collection('contacts').add({ uid, name, balance: Math.floor(Math.random() * 50000) - 20000 });
+    }
+
+    // 2. 10 أصناف
+    const prods = ['لابتوب HP', 'ماوس لاسلكي', 'شاشة سامسونج', 'كيبورد ميكانيكي', 'هاردسك 1TB', 'رام 8GB', 'طابعة Canon', 'ورق A4', 'حبر طابعة', 'راوتر TP-Link'];
+    for (let p of prods) {
+      await db.collection('products').add({ uid, name: p, qty: Math.floor(Math.random() * 20) });
+    }
+
+    // 3. 10 حركات خزينة
+    const txTypes = ['in', 'out'];
+    const txCats = { in: ['قبض', 'سداد عميل', 'إيداع'], out: ['رواتب', 'إيجارات', 'فواتير', 'مشتريات', 'صيانة'] };
+    for (let i = 0; i < 10; i++) {
+      const type = txTypes[Math.floor(Math.random() * 2)];
+      const catList = txCats[type];
+      const category = catList[Math.floor(Math.random() * catList.length)];
+      await db.collection('transactions').add({
+        uid, type, category, amount: Math.floor(Math.random() * 50000) + 1000, date: today(), desc: `حركة ${category} تجريبية ${i+1}`
+      });
+    }
+
+    // 4. 10 فواتير
+    const invTypes = ['sale', 'purchase', 'credit'];
+    for (let i = 0; i < 10; i++) {
+      const type = invTypes[Math.floor(Math.random() * invTypes.length)];
+      const contactName = names[Math.floor(Math.random() * names.length)];
+      const price = Math.floor(Math.random() * 10000) + 1000;
+      await db.collection('invoices').add({
+        uid, contactId: 'dummy', contactName, type, number: (1001 + i).toString(), date: today(), receiver: contactName, signature: '',
+        items: [{ name: 'صنف تجريبي', qty: 1, price: price, total: price }], total: price, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+
+    // 5. 10 مهام
+    const taskTexts = ['مراجعة المخزون', 'الاتصال بالمورد', 'تسديد فاتورة الكهرباء', 'طباعة التقارير', 'اجتماع فريق العمل', 'صيانة الأجهزة', 'رد على العملاء', 'تحديث الأسعار', 'شراء مستلزمات', 'تنظيف المحل'];
+    for (let t of taskTexts) {
+      await db.collection('tasks').add({ uid, text: t, priority: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)], date: today(), completed: false, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    }
+
+    // 6. 10 ملاحظات
+    const noteTitles = ['ملاحظة هامة', 'فكرة مشروع', 'مذكرة اجتماع', 'تذكير', 'قائمة تسوق', 'خطة الشهر', 'مشكلة تحتاج حل', 'تواصل مع عميل', 'تعديل مطلوب', 'فكرة تسويقية'];
+    for (let n of noteTitles) {
+      await db.collection('notes').add({ uid, title: n, content: 'هذا نص تجريبي للمذكرة للتأكد من عمل النظام بشكل صحيح.', date: new Date().toLocaleDateString('ar-EG'), createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    }
+
+    alert('✅ تم إضافة البيانات التجريبية بنجاح! تفقد الصفحة الرئيسية.');
+    navigate('dashboard');
+  } catch (error) {
+    alert('❌ حدث خطأ: ' + error.message);
+  }
+}
+
+async function clearAllData() {
+  if (!confirm('⚠️ تحذير: سيتم حذف جميع الفواتير، العملاء، المخزون، والحركات نهائياً. هل أنت متأكد؟')) return;
+  if (!confirm('هل أنت متأكد 100%؟ لا يمكن التراجع عن هذه الخطوة!')) return;
+  
+  const uid = currentUser.uid;
+  const collections = ['transactions', 'contacts', 'invoices', 'products', 'tasks', 'notes'];
+  
+  try {
+    for (const col of collections) {
+      const snapshot = await db.collection(col).where('uid', '==', uid).get();
+      const batch = db.batch();
+      snapshot.docs.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+    }
+    alert('✅ تم مسح جميع البيانات بنجاح! التطبيق الآن نظيف وجاهز للاستخدام.');
+    navigate('dashboard');
+  } catch (error) {
+    alert('❌ حدث خطأ أثناء المسح: ' + error.message);
+  }
+}
 </script>
 
 <!-- كود تشغيل التطبيق بدون إنترنت -->
@@ -1003,5 +1092,5 @@ async function updateSub(id){ await db.collection('users').doc(id).update({'subs
   }
 </script>
 
-</body> 
+</body>
 </html>
