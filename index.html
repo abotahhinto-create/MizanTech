@@ -495,6 +495,7 @@ tbody tr:hover td { background: var(--bg); }
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
+// ================= إعدادات Firebase =================
 const firebaseConfig = { apiKey: "AIzaSyBlaWceELg_C66xKSNtvdoiOPHI0dfQCkM", authDomain: "mizantech.firebaseapp.com", projectId: "mizantech", storageBucket: "mizantech.firebasestorage.app", messagingSenderId: "1030540348490", appId: "1:1030540348490:web:430dcbc34015a103c42ab3" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -509,7 +510,7 @@ function money(n){ return (Number(n)||0).toLocaleString('en-US') + ' ' + (data.s
 function openModal(t, b, f){ document.getElementById('modalTitle').textContent=t; document.getElementById('modalBody').innerHTML=b; document.getElementById('modalFoot').innerHTML=f||''; document.getElementById('overlay').classList.remove('hidden'); }
 function closeModal(){ document.getElementById('overlay').classList.add('hidden'); }
 
-// الثيمات والوضع الليلي
+// ================= الثيمات والوضع الليلي =================
 function setTheme(themeClass) {
   document.body.className = themeClass;
   if(localStorage.getItem('mizan_dark') === 'true') document.body.classList.add('dark');
@@ -531,14 +532,48 @@ window.onload = function() {
   }
 }
 
+// ================= المصادقة (تسجيل الدخول والإنشاء) =================
 function switchAuth(m){ 
     document.getElementById('tabLogin').classList.toggle('active', m==='login'); 
     document.getElementById('tabRegister').classList.toggle('active', m==='register'); 
     document.getElementById('loginForm').classList.toggle('hidden', m!=='login'); 
     document.getElementById('registerForm').classList.toggle('hidden', m==='login'); 
 }
-async function doLogin(){ const e=document.getElementById('loginEmail').value, p=document.getElementById('loginPass').value; if(!e||!p) return alert('أدخل البيانات'); try{ await auth.signInWithEmailAndPassword(e,p); }catch(err){ alert('خطأ: '+err.message); } }
-async function doRegister(){ const n=document.getElementById('regName').value, e=document.getElementById('regEmail').value, p=document.getElementById('regPass').value; if(!n||!e||p.length<6) return alert('تأكد من البيانات'); try{ const c=await auth.createUserWithEmailAndPassword(e,p); await c.user.updateProfile({displayName:n}); await db.collection('users').add({uid:c.user.uid, name:n, email:e, subscription:{plan:'free',active:false}, settings:{businessName:'مشروعي', currency:'ر.ي', logoBase64:'', city:'Sanaa', country:'Yemen'}}); }catch(err){ alert('خطأ: '+err.message); } }
+
+async function doLogin(){ 
+    const e = document.getElementById('loginEmail').value.trim(); 
+    const p = document.getElementById('loginPass').value; 
+    if(!e || !p) return alert('⚠️ أدخل البريد وكلمة المرور'); 
+    try { 
+        await auth.signInWithEmailAndPassword(e,p); 
+    } catch(err) { 
+        alert('❌ خطأ في الدخول: ' + err.message); 
+    } 
+}
+
+async function doRegister(){ 
+    const n = document.getElementById('regName').value.trim(); 
+    const e = document.getElementById('regEmail').value.trim(); 
+    const p = document.getElementById('regPass').value; 
+    
+    if(!n || !e || p.length < 6) return alert('⚠️ تأكد من ملء جميع البيانات (كلمة المرور 6 أحرف على الأقل)'); 
+    if(!e.includes('@') || e.includes(' ')) return alert('⚠️ يرجى كتابة البريد الإلكتروني بشكل صحيح (بدون مسافات)'); 
+
+    try { 
+        const c = await auth.createUserWithEmailAndPassword(e,p); 
+        await c.user.updateProfile({displayName:n}); 
+        await db.collection('users').add({
+            uid: c.user.uid, 
+            name: n, 
+            email: e, 
+            subscription: {plan:'free', active:false}, 
+            settings: {businessName:'مشروعي', currency:'ر.ي', logoBase64:'', city:'Sanaa', country:'Yemen'}
+        }); 
+    } catch(err) { 
+        alert('❌ خطأ في التسجيل: ' + err.message); 
+    } 
+}
+
 function logout(){ unsubscribers.forEach(f=>f()); auth.signOut(); }
 
 auth.onAuthStateChanged(async (u) => {
@@ -569,6 +604,7 @@ auth.onAuthStateChanged(async (u) => {
   }
 });
 
+// ================= جلب البيانات (الاشتراكات) =================
 function subscribeData(){
   unsubscribers = []; const uid = currentUser.uid;
   unsubscribers.push(db.collection('transactions').where('uid','==',uid).onSnapshot(s => { data.transactions = s.docs.map(d=>({id:d.id,...d.data()})); renderDash(); }));
@@ -579,6 +615,7 @@ function subscribeData(){
   unsubscribers.push(db.collection('notes').where('uid','==',uid).onSnapshot(s => { data.notes = s.docs.map(d=>({id:d.id,...d.data()})); renderNotes(); }));
 }
 
+// ================= التنقل =================
 function navigate(p){ 
     document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); 
     document.getElementById('page-'+p).classList.add('active'); 
@@ -620,7 +657,7 @@ function renderReports() {
   document.getElementById('repNetProfit').style.color = netProfit >= 0 ? 'var(--primary)' : 'var(--danger)';
 }
 
-// ================= الرسم =================
+// ================= الرسم (لوحة التحكم والجداول) =================
 function renderDash(){
   const lowStock = data.products.filter(p => p.qty <= 5);
   const alertsDiv = document.getElementById('alertsContainer');
@@ -641,7 +678,6 @@ function renderDash(){
   document.getElementById('cashTable').innerHTML = data.transactions.map(t=>`<tr><td>${t.date}</td><td><span class="tag ${t.type}">${t.type==='in'?'قبض':'صرف'}</span></td><td><b>${t.category || 'عام'}</b></td><td style="color:${t.type==='in'?'var(--primary)':'var(--danger)'};font-weight:900;">${money(t.amount)}</td><td>${t.desc||'—'}</td><td><button class="btn btn-sm btn-danger" onclick="deleteTx('${t.id}')">🗑️ حذف</button></td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center">لا يوجد حركات</td></tr>';
 }
 
-// ================= قسم الحسابات =================
 function renderContacts(){
   let totalPositive = 0, totalNegative = 0;
   data.contacts.forEach(c => {
@@ -1004,59 +1040,38 @@ async function loadDummyData() {
   if (!confirm('سيتم إضافة 10 عمليات تجريبية لكل قسم (عملاء، مخزون، فواتير، إلخ). هل أنت متأكد؟')) return;
   const uid = currentUser.uid;
   try {
-    // 1. 10 عملاء
     const names = ['أحمد محمد', 'شركة النور', 'علي صالح', 'مؤسسة الأمل', 'خالد عمر', 'محمد عبدالله', 'سالم أحمد', 'شركة الفهد', 'عمر ياسر', 'يوسف طه'];
-    for (let name of names) {
-      await db.collection('contacts').add({ uid, name, balance: Math.floor(Math.random() * 50000) - 20000 });
-    }
+    for (let name of names) { await db.collection('contacts').add({ uid, name, balance: Math.floor(Math.random() * 50000) - 20000 }); }
 
-    // 2. 10 أصناف
     const prods = ['لابتوب HP', 'ماوس لاسلكي', 'شاشة سامسونج', 'كيبورد ميكانيكي', 'هاردسك 1TB', 'رام 8GB', 'طابعة Canon', 'ورق A4', 'حبر طابعة', 'راوتر TP-Link'];
-    for (let p of prods) {
-      await db.collection('products').add({ uid, name: p, qty: Math.floor(Math.random() * 20) });
-    }
+    for (let p of prods) { await db.collection('products').add({ uid, name: p, qty: Math.floor(Math.random() * 20) }); }
 
-    // 3. 10 حركات خزينة
     const txTypes = ['in', 'out'];
     const txCats = { in: ['قبض', 'سداد عميل', 'إيداع'], out: ['رواتب', 'إيجارات', 'فواتير', 'مشتريات', 'صيانة'] };
     for (let i = 0; i < 10; i++) {
       const type = txTypes[Math.floor(Math.random() * 2)];
       const catList = txCats[type];
       const category = catList[Math.floor(Math.random() * catList.length)];
-      await db.collection('transactions').add({
-        uid, type, category, amount: Math.floor(Math.random() * 50000) + 1000, date: today(), desc: `حركة ${category} تجريبية ${i+1}`
-      });
+      await db.collection('transactions').add({ uid, type, category, amount: Math.floor(Math.random() * 50000) + 1000, date: today(), desc: `حركة ${category} تجريبية ${i+1}` });
     }
 
-    // 4. 10 فواتير
     const invTypes = ['sale', 'purchase', 'credit'];
     for (let i = 0; i < 10; i++) {
       const type = invTypes[Math.floor(Math.random() * invTypes.length)];
       const contactName = names[Math.floor(Math.random() * names.length)];
       const price = Math.floor(Math.random() * 10000) + 1000;
-      await db.collection('invoices').add({
-        uid, contactId: 'dummy', contactName, type, number: (1001 + i).toString(), date: today(), receiver: contactName, signature: '',
-        items: [{ name: 'صنف تجريبي', qty: 1, price: price, total: price }], total: price, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      await db.collection('invoices').add({ uid, contactId: 'dummy', contactName, type, number: (1001 + i).toString(), date: today(), receiver: contactName, signature: '', items: [{ name: 'صنف تجريبي', qty: 1, price: price, total: price }], total: price, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
     }
 
-    // 5. 10 مهام
     const taskTexts = ['مراجعة المخزون', 'الاتصال بالمورد', 'تسديد فاتورة الكهرباء', 'طباعة التقارير', 'اجتماع فريق العمل', 'صيانة الأجهزة', 'رد على العملاء', 'تحديث الأسعار', 'شراء مستلزمات', 'تنظيف المحل'];
-    for (let t of taskTexts) {
-      await db.collection('tasks').add({ uid, text: t, priority: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)], date: today(), completed: false, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    }
+    for (let t of taskTexts) { await db.collection('tasks').add({ uid, text: t, priority: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)], date: today(), completed: false, createdAt: firebase.firestore.FieldValue.serverTimestamp() }); }
 
-    // 6. 10 ملاحظات
     const noteTitles = ['ملاحظة هامة', 'فكرة مشروع', 'مذكرة اجتماع', 'تذكير', 'قائمة تسوق', 'خطة الشهر', 'مشكلة تحتاج حل', 'تواصل مع عميل', 'تعديل مطلوب', 'فكرة تسويقية'];
-    for (let n of noteTitles) {
-      await db.collection('notes').add({ uid, title: n, content: 'هذا نص تجريبي للمذكرة للتأكد من عمل النظام بشكل صحيح.', date: new Date().toLocaleDateString('ar-EG'), createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    }
+    for (let n of noteTitles) { await db.collection('notes').add({ uid, title: n, content: 'هذا نص تجريبي للمذكرة للتأكد من عمل النظام بشكل صحيح.', date: new Date().toLocaleDateString('ar-EG'), createdAt: firebase.firestore.FieldValue.serverTimestamp() }); }
 
     alert('✅ تم إضافة البيانات التجريبية بنجاح! تفقد الصفحة الرئيسية.');
     navigate('dashboard');
-  } catch (error) {
-    alert('❌ حدث خطأ: ' + error.message);
-  }
+  } catch (error) { alert('❌ حدث خطأ: ' + error.message); }
 }
 
 async function clearAllData() {
@@ -1075,22 +1090,17 @@ async function clearAllData() {
     }
     alert('✅ تم مسح جميع البيانات بنجاح! التطبيق الآن نظيف وجاهز للاستخدام.');
     navigate('dashboard');
-  } catch (error) {
-    alert('❌ حدث خطأ أثناء المسح: ' + error.message);
-  }
+  } catch (error) { alert('❌ حدث خطأ أثناء المسح: ' + error.message); }
+}
+
+// ================= تشغيل التطبيق بدون إنترنت =================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => console.log('Service Worker يعمل بنجاح!'))
+      .catch(err => console.log('فشل تسجيل Service Worker:', err));
+  });
 }
 </script>
-
-<!-- كود تشغيل التطبيق بدون إنترنت -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => console.log('Service Worker يعمل بنجاح!'))
-        .catch(err => console.log('فشل تسجيل Service Worker:', err));
-    });
-  }
-</script>
-
 </body>
 </html>
