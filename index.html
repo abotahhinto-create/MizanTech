@@ -15,22 +15,9 @@ body{font-family:'Cairo',system-ui,sans-serif; background:var(--bg); color:var(-
 button,input,select,textarea{font-family:inherit; font-size:16px; border:none; outline:none;}
 .hidden{display:none!important} .muted{color:var(--muted)}
 
-/* ================= شاشة الدخول ================= */
-.auth-screen { 
-  min-height: 100vh; /* تم التعديل ليسمح بالتمرير */
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  padding: 30px 20px; 
-  background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #10b981 100%); 
-  position: relative; 
-  overflow-y: auto; 
-}
-.auth-card { 
-  background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); 
-  width: 100%; max-width: 400px; padding: 40px 30px; border-radius: 24px; 
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; z-index: 2; 
-}
+/* شاشة الدخول */
+.auth-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 30px 20px; background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #10b981 100%); position: relative; overflow-y: auto; }
+.auth-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); width: 100%; max-width: 400px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; z-index: 2; margin: auto; }
 .auth-card .logo { font-size: 65px; text-align: center; margin-bottom: 10px; }
 .auth-card h1 { font-size: 28px; text-align: center; color: var(--primary); font-weight: 900; margin-bottom: 5px; }
 .auth-card .sub { text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 25px; font-weight: 600; }
@@ -38,7 +25,7 @@ button,input,select,textarea{font-family:inherit; font-size:16px; border:none; o
 .tabs button { flex: 1; padding: 12px; background: transparent; border-radius: 10px; cursor: pointer; font-weight: 800; color: var(--muted); font-size:14px; }
 .tabs button.active { background: var(--card); color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,.05); }
 
-/* ================= الحقول والأزرار ================= */
+/* الحقول والأزرار */
 .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; text-align: right; }
 .field label { font-size: 13px; font-weight: 800; color: var(--text); }
 .field input, .field select { padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); width: 100%; font-weight: 600;}
@@ -50,7 +37,7 @@ button,input,select,textarea{font-family:inherit; font-size:16px; border:none; o
 .btn-block { width: 100%; padding: 16px; font-size: 16px; }
 .btn-icon { background: transparent; cursor: pointer; font-size: 24px; padding: 8px; color: var(--muted); line-height: 1; }
 
-/* ================= الهيكل العام ================= */
+/* الهيكل العام */
 .app { display: flex; min-height: 100vh; }
 .sidebar { width: 260px; background: var(--sidebar); color: #cbd5e1; display: flex; flex-direction: column; position: fixed; inset-block: 0; right: 0; z-index: 60; transition: transform .3s ease; }
 .sidebar.open { transform: translateX(0); }
@@ -70,7 +57,7 @@ button,input,select,textarea{font-family:inherit; font-size:16px; border:none; o
 .content { padding: 24px; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
 .page { display: none; } .page.active { display: block; }
 
-/* ================= الكروت والجداول ================= */
+/* الكروت والجداول */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; overflow: hidden; }
 .stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--primary); }
@@ -94,7 +81,7 @@ tbody td { padding: 16px; border-top: 1px solid var(--border); white-space: nowr
 .tag.warn { background: #fef3c7; color: #b45309; } .tag.ok { background: #dcfce7; color: #15803d; }
 .statement-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px dashed var(--border); }
 
-/* ================= النوافذ المنبثقة ================= */
+/* النوافذ المنبثقة */
 .overlay { position: fixed; inset: 0; background: rgba(15,23,42,.7); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; overflow-y: auto; }
 .modal { background: var(--card); border-radius: 24px; width: 100%; max-width: 500px; max-height: 90vh; display: flex; flex-direction: column; margin: auto; }
 .modal-head { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
@@ -103,7 +90,7 @@ tbody td { padding: 16px; border-top: 1px solid var(--border); white-space: nowr
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; } .form-grid .full { grid-column: 1/-1; }
 @media(max-width: 520px) { .form-grid { grid-template-columns: 1fr; } }
 
-/* ================= التسبيح ================= */
+/* التسبيح */
 .tasbeeh-container { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 24px; color: #fff; box-shadow: var(--shadow); }
 .tasbeeh-text { font-size: 32px; font-family: 'Amiri', serif; margin-bottom: 20px; }
 .tasbeeh-count { font-size: 100px; font-weight: 900; margin: 20px 0; }
@@ -120,19 +107,19 @@ tbody td { padding: 16px; border-top: 1px solid var(--border); white-space: nowr
     <h1>MizanTech</h1>
     <p class="sub">حساباتك في جيبك</p>
     <div class="tabs">
-      <button id="tabLogin" class="active" onclick="switchAuth('login')">دخول</button>
-      <button id="tabRegister" onclick="switchAuth('register')">حساب جديد</button>
+      <button id="tabLogin" class="active" onclick="window.switchAuth('login')">دخول</button>
+      <button id="tabRegister" onclick="window.switchAuth('register')">حساب جديد</button>
     </div>
     <div id="loginForm">
       <div class="field"><label>البريد الإلكتروني</label><input id="loginEmail" type="email" placeholder="you@example.com"></div>
       <div class="field"><label>كلمة المرور</label><input id="loginPass" type="password" placeholder="••••••••"></div>
-      <button class="btn btn-primary btn-block" onclick="doLogin()">دخول</button>
+      <button class="btn btn-primary btn-block" onclick="window.doLogin()">دخول</button>
     </div>
     <div id="registerForm" class="hidden">
       <div class="field"><label>الاسم الكامل</label><input id="regName" placeholder="اسمك"></div>
       <div class="field"><label>البريد الإلكتروني</label><input id="regEmail" type="email" placeholder="you@example.com"></div>
       <div class="field"><label>كلمة المرور (6 أحرف)</label><input id="regPass" type="password" placeholder="••••••••"></div>
-      <button class="btn btn-primary btn-block" onclick="doRegister()">إنشاء الحساب</button>
+      <button class="btn btn-primary btn-block" onclick="window.doRegister()">إنشاء الحساب</button>
     </div>
   </div>
 </div>
@@ -141,43 +128,43 @@ tbody td { padding: 16px; border-top: 1px solid var(--border); white-space: nowr
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand"><span style="font-size:28px">⚖️</span><div><h2>MizanTech</h2><small>الإصدار الاحترافي</small></div></div>
     <nav class="nav">
-      <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ic">🏠</span> الرئيسية</button>
-      <button class="nav-item hidden" id="navAdmin" data-page="admin" onclick="navigate('admin')" style="color:#fbbf24;"><span class="ic">👑</span> لوحة التحكم</button>
-      <button class="nav-item" data-page="cash" onclick="navigate('cash')"><span class="ic">💵</span> النقدية</button>
-      <button class="nav-item" data-page="contacts" onclick="navigate('contacts')"><span class="ic">👥</span> العملاء</button>
-      <button class="nav-item" data-page="invoices" onclick="navigate('invoices')"><span class="ic">🧾</span> الفواتير</button>
-      <button class="nav-item" data-page="inventory" onclick="navigate('inventory')"><span class="ic">📦</span> المخزون</button>
-      <button class="nav-item" data-page="reports" onclick="navigate('reports')"><span class="ic">📊</span> التقارير</button>
-      <button class="nav-item" data-page="tasbeeh" onclick="navigate('tasbeeh')"><span class="ic">📿</span> التسبيح</button>
-      <button class="nav-item" data-page="settings" onclick="navigate('settings')"><span class="ic">⚙️</span> الإعدادات</button>
+      <button class="nav-item active" data-page="dashboard" onclick="window.navigate('dashboard')"><span class="ic">🏠</span> الرئيسية</button>
+      <button class="nav-item hidden" id="navAdmin" data-page="admin" onclick="window.navigate('admin')" style="color:#fbbf24;"><span class="ic">👑</span> لوحة التحكم</button>
+      <button class="nav-item" data-page="cash" onclick="window.navigate('cash')"><span class="ic">💵</span> النقدية</button>
+      <button class="nav-item" data-page="contacts" onclick="window.navigate('contacts')"><span class="ic">👥</span> العملاء</button>
+      <button class="nav-item" data-page="invoices" onclick="window.navigate('invoices')"><span class="ic">🧾</span> الفواتير</button>
+      <button class="nav-item" data-page="inventory" onclick="window.navigate('inventory')"><span class="ic">📦</span> المخزون</button>
+      <button class="nav-item" data-page="reports" onclick="window.navigate('reports')"><span class="ic">📊</span> التقارير</button>
+      <button class="nav-item" data-page="tasbeeh" onclick="window.navigate('tasbeeh')"><span class="ic">📿</span> التسبيح</button>
+      <button class="nav-item" data-page="settings" onclick="window.navigate('settings')"><span class="ic">⚙️</span> الإعدادات</button>
     </nav>
-    <div class="sidebar-foot"><button onclick="logout()" class="btn-exit">🚪 تسجيل الخروج</button></div>
+    <div class="sidebar-foot"><button onclick="window.logout()" class="btn-exit">🚪 تسجيل الخروج</button></div>
   </aside>
 
   <div class="main">
     <header class="topbar">
-      <div style="display:flex;align-items:center;gap:15px"><button class="menu-btn" onclick="toggleSidebar()">☰</button><h2 id="pageTitle">الرئيسية</h2></div>
+      <div style="display:flex;align-items:center;gap:15px"><button class="menu-btn" onclick="window.toggleSidebar()">☰</button><h2 id="pageTitle">الرئيسية</h2></div>
       <div class="tools"><span class="biz-badge" id="bizBadge">مشروعي</span></div>
     </header>
 
     <div class="content">
-      <section id="page-dashboard" class="page active"><div class="stats-grid" id="statsGrid"></div><div class="grid-menu"><div class="grid-btn" onclick="openTransactionModal()"><div class="g-icon">💵</div><div class="g-text">إضافة قيد</div></div><div class="grid-btn" onclick="openInvoiceModal()"><div class="g-icon">🧾</div><div class="g-text">فاتورة</div></div><div class="grid-btn" onclick="openContactModal()"><div class="g-icon">👥</div><div class="g-text">جهة جديدة</div></div><div class="grid-btn" onclick="openTransferModal()"><div class="g-icon">🔄</div><div class="g-text">حوالة</div></div><div class="grid-btn" onclick="navigate('reports')"><div class="g-icon">📊</div><div class="g-text">التقارير</div></div><div class="grid-btn" onclick="navigate('inventory')"><div class="g-icon">📦</div><div class="g-text">المخزون</div></div></div><div class="card"><div class="card-head"><h3>العمليات الأخيرة</h3><button class="btn btn-sm btn-primary" onclick="navigate('cash')">عرض الكل</button></div><div id="recentTxList"></div></div></section>
+      <section id="page-dashboard" class="page active"><div class="stats-grid" id="statsGrid"></div><div class="grid-menu"><div class="grid-btn" onclick="window.openTransactionModal()"><div class="g-icon">💵</div><div class="g-text">إضافة قيد</div></div><div class="grid-btn" onclick="window.openInvoiceModal()"><div class="g-icon">🧾</div><div class="g-text">فاتورة</div></div><div class="grid-btn" onclick="window.openContactModal()"><div class="g-icon">👥</div><div class="g-text">جهة جديدة</div></div><div class="grid-btn" onclick="window.openTransferModal()"><div class="g-icon">🔄</div><div class="g-text">حوالة</div></div><div class="grid-btn" onclick="window.navigate('reports')"><div class="g-icon">📊</div><div class="g-text">التقارير</div></div><div class="grid-btn" onclick="window.navigate('inventory')"><div class="g-icon">📦</div><div class="g-text">المخزون</div></div></div><div class="card"><div class="card-head"><h3>العمليات الأخيرة</h3><button class="btn btn-sm btn-primary" onclick="window.navigate('cash')">عرض الكل</button></div><div id="recentTxList"></div></div></section>
       
-      <section id="page-admin" class="page"><div class="card"><div class="card-head"><h3>👑 إدارة المشتركين</h3><button class="btn btn-sm btn-primary" onclick="loadAdminData()">🔄 تحديث</button></div><div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الخطة</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="adminTable"></tbody></table></div></div></section>
+      <section id="page-admin" class="page"><div class="card"><div class="card-head"><h3>👑 إدارة المشتركين</h3><button class="btn btn-sm btn-primary" onclick="window.loadAdminData()">🔄 تحديث</button></div><div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الخطة</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="adminTable"></tbody></table></div></div></section>
       
-      <section id="page-cash" class="page"><div class="card"><div class="card-head"><h3>سجل الحركات</h3><button class="btn btn-sm btn-primary" onclick="exportToCSV()">⬇️ تصدير إكسل</button></div><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>البيان</th></tr></thead><tbody id="cashTable"></tbody></table></div></div></section>
+      <section id="page-cash" class="page"><div class="card"><div class="card-head"><h3>سجل الحركات</h3><button class="btn btn-sm btn-primary" onclick="window.exportToCSV()">⬇️ تصدير إكسل</button></div><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>البيان</th></tr></thead><tbody id="cashTable"></tbody></table></div></div></section>
       
-      <section id="page-contacts" class="page"><div class="card"><div class="card-head"><h3>العملاء والموردون</h3><button class="btn btn-sm btn-primary" onclick="openContactModal()">+ جهة جديدة</button></div><div id="contactsGrid" style="display:grid; gap:15px;"></div></div></section>
+      <section id="page-contacts" class="page"><div class="card"><div class="card-head"><h3>العملاء والموردون</h3><button class="btn btn-sm btn-primary" onclick="window.openContactModal()">+ جهة جديدة</button></div><div id="contactsGrid" style="display:grid; gap:15px;"></div></div></section>
       
-      <section id="page-invoices" class="page"><div class="card"><div class="card-head"><h3>الفواتير</h3><button class="btn btn-sm btn-primary" onclick="openInvoiceModal()">+ فاتورة</button></div><div class="table-wrap"><table><thead><tr><th>#</th><th>المبلغ</th></tr></thead><tbody id="invoicesTable"></tbody></table></div></div></section>
+      <section id="page-invoices" class="page"><div class="card"><div class="card-head"><h3>الفواتير</h3><button class="btn btn-sm btn-primary" onclick="window.openInvoiceModal()">+ فاتورة</button></div><div class="table-wrap"><table><thead><tr><th>#</th><th>المبلغ</th></tr></thead><tbody id="invoicesTable"></tbody></table></div></div></section>
       
-      <section id="page-inventory" class="page"><div class="card"><div class="card-head"><h3>المخزون</h3><button class="btn btn-sm btn-primary" onclick="openProductModal()">+ صنف</button></div><div class="table-wrap"><table><thead><tr><th>الصنف</th><th>الكمية</th></tr></thead><tbody id="inventoryTable"></tbody></table></div></div></section>
+      <section id="page-inventory" class="page"><div class="card"><div class="card-head"><h3>المخزون</h3><button class="btn btn-sm btn-primary" onclick="window.openProductModal()">+ صنف</button></div><div class="table-wrap"><table><thead><tr><th>الصنف</th><th>الكمية</th></tr></thead><tbody id="inventoryTable"></tbody></table></div></div></section>
       
       <section id="page-reports" class="page"><div class="card"><div class="card-head"><h3>📊 ملخص الأداء</h3></div><div class="stats-grid" id="reportStats"></div></div></section>
       
-      <section id="page-tasbeeh" class="page"><div class="tasbeeh-container"><h2 class="tasbeeh-text">سُبْحَانَ اللَّهِ</h2><h1 class="tasbeeh-count" id="tasbeehCount">0</h1><button class="tasbeeh-btn" onclick="incrementTasbeeh()">+</button></div></section>
+      <section id="page-tasbeeh" class="page"><div class="tasbeeh-container"><h2 class="tasbeeh-text">سُبْحَانَ اللَّهِ</h2><h1 class="tasbeeh-count" id="tasbeehCount">0</h1><button class="tasbeeh-btn" onclick="window.incrementTasbeeh()">+</button></div></section>
       
-      <section id="page-settings" class="page"><div class="card"><div class="card-head"><h3>إعدادات المنشأة</h3></div><div class="form-grid"><div class="field"><label>اسم المشروع</label><input id="setName"></div><div class="field"><label>العملة</label><input id="setCurrency"></div></div><button class="btn btn-primary" onclick="saveSettings()">حفظ التعديلات</button></div></section>
+      <section id="page-settings" class="page"><div class="card"><div class="card-head"><h3>إعدادات المنشأة</h3></div><div class="form-grid"><div class="field"><label>اسم المشروع</label><input id="setName"></div><div class="field"><label>العملة</label><input id="setCurrency"></div></div><button class="btn btn-primary" onclick="window.saveSettings()">حفظ التعديلات</button></div></section>
     </div>
   </div>
 </div>
@@ -198,13 +185,25 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 const firebaseConfig = { apiKey: "AIzaSyBlaWceELg_C66xKSNtvdoiOPHI0dfQCkM", authDomain: "mizantech.firebaseapp.com", projectId: "mizantech", storageBucket: "mizantech.firebasestorage.app", messagingSenderId: "1030540348490", appId: "1:1030540348490:web:430dcbc34015a103c42ab3" };
 const app = initializeApp(firebaseConfig); const db = getFirestore(app); const auth = getAuth(app);
 
+// إدارة زر الرجوع في الجوال
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', function(event) {
+    const overlay = document.getElementById('overlay');
+    if (!overlay.classList.contains('hidden')) {
+        window.closeModal();
+        history.pushState(null, null, location.href); 
+    } else if (!document.getElementById('page-dashboard').classList.contains('active')) {
+        window.navigate('dashboard');
+        history.pushState(null, null, location.href);
+    }
+});
+
 let currentUser = null, userDoc = null, isAdminUser = false, unsubscribers = [];
 let data = { transactions: [], contacts: [], invoices: [], products: [], settings: { businessName: 'مشروعي', currency: 'ر.ي' } };
 
 function today(){ return new Date().toISOString().slice(0,10); }
 function money(n){ return (Number(n)||0).toLocaleString('en-US') + ' ' + (data.settings.currency || 'ر.ي'); }
 
-// تصدير الدوال للنطاق العام لكي تعمل أزرار الـ HTML
 window.openModal = function(t, b, f){ document.getElementById('modalTitle').textContent=t; document.getElementById('modalBody').innerHTML=b; document.getElementById('modalFoot').innerHTML=f||''; document.getElementById('overlay').classList.remove('hidden'); };
 window.closeModal = function(){ document.getElementById('overlay').classList.add('hidden'); };
 
@@ -242,33 +241,33 @@ function renderAll(){
   document.getElementById('statsGrid').innerHTML = `<div class="stat bal"><div class="s-label">الرصيد</div><div class="s-value" style="color:var(--info)">${money(i-e)}</div></div><div class="stat"><div class="s-label">الوارد</div><div class="s-value" style="color:var(--primary)">${money(i)}</div></div><div class="stat out"><div class="s-label">الصادر</div><div class="s-value" style="color:var(--danger)">${money(e)}</div></div><div class="stat debt"><div class="s-label">جهات</div><div class="s-value">${data.contacts.length}</div></div>`;
   document.getElementById('recentTxList').innerHTML = data.transactions.slice(0,5).map(t=>`<div class="statement-item"><div><b>${t.desc||'عملية'}</b><br><small style="color:var(--muted)">${t.date}</small></div><div style="color:${t.type==='in'?'var(--primary)':'var(--danger)'};font-weight:900;font-size:16px;">${money(t.amount)}</div></div>`).join('') || '<div style="text-align:center;padding:20px;color:var(--muted);">لا يوجد عمليات</div>';
   document.getElementById('cashTable').innerHTML = data.transactions.map(t=>`<tr><td>${t.date}</td><td><span class="tag ${t.type}">${t.type==='in'?'وارد':'صادر'}</span></td><td style="color:${t.type==='in'?'var(--primary)':'var(--danger)'};font-weight:900;">${money(t.amount)}</td><td>${t.desc||'—'}</td></tr>`).join('') || '<tr><td colspan="4" style="text-align:center">لا يوجد</td></tr>';
-  document.getElementById('contactsGrid').innerHTML = data.contacts.map(c=>`<div class="card" style="margin:0;padding:15px;display:flex;justify-content:space-between;align-items:center;"><div><b style="font-size:16px;">${c.name}</b><br><span style="color:var(--warning);font-weight:900;">${money(c.balance)}</span></div><button class="btn btn-sm btn-primary" onclick="openStatement('${c.id}')">كشف الحساب</button></div>`).join('') || '<div style="text-align:center;padding:20px;color:var(--muted);">لا يوجد عملاء</div>';
+  document.getElementById('contactsGrid').innerHTML = data.contacts.map(c=>`<div class="card" style="margin:0;padding:15px;display:flex;justify-content:space-between;align-items:center;"><div><b style="font-size:16px;">${c.name}</b><br><span style="color:var(--warning);font-weight:900;">${money(c.balance)}</span></div><button class="btn btn-sm btn-primary" onclick="window.openStatement('${c.id}')">كشف الحساب</button></div>`).join('') || '<div style="text-align:center;padding:20px;color:var(--muted);">لا يوجد عملاء</div>';
   document.getElementById('invoicesTable').innerHTML = data.invoices.map(inv=>`<tr><td>#${inv.number}</td><td>${money(inv.total)}</td></tr>`).join('') || '<tr><td colspan="2" style="text-align:center">لا يوجد</td></tr>';
   document.getElementById('inventoryTable').innerHTML = data.products.map(p=>`<tr><td>${p.name}</td><td>${p.qty}</td></tr>`).join('') || '<tr><td colspan="2" style="text-align:center">لا يوجد</td></tr>';
 }
 
-window.loadAdminData = async function(){ const snap = await getDocs(collection(db, 'users')); let h = ''; snap.forEach(d=>{ const u = d.data(); h += `<tr><td>${u.name}</td><td>${u.subscription?.plan}</td><td>${u.subscription?.active?'<span class="tag ok">نشط</span>':'<span class="tag warn">موقوف</span>'}</td><td><button class="btn btn-sm btn-primary" onclick="updateSub('${d.id}')">تفعيل</button></td></tr>`; }); document.getElementById('adminTable').innerHTML = h; };
-window.updateSub = async function(id){ await updateDoc(doc(db,'users',id), {'subscription.plan':'yearly','subscription.active':true}); alert('تم'); loadAdminData(); };
+window.loadAdminData = async function(){ const snap = await getDocs(collection(db, 'users')); let h = ''; snap.forEach(d=>{ const u = d.data(); h += `<tr><td>${u.name}</td><td>${u.subscription?.plan}</td><td>${u.subscription?.active?'<span class="tag ok">نشط</span>':'<span class="tag warn">موقوف</span>'}</td><td><button class="btn btn-sm btn-primary" onclick="window.updateSub('${d.id}')">تفعيل</button></td></tr>`; }); document.getElementById('adminTable').innerHTML = h; };
+window.updateSub = async function(id){ await updateDoc(doc(db,'users',id), {'subscription.plan':'yearly','subscription.active':true}); alert('تم'); window.loadAdminData(); };
 
-window.openTransactionModal = function(){ openModal('إضافة قيد', `<div class="form-grid"><div class="field"><label>المبلغ</label><input type="number" id="tAmt"></div><div class="field"><label>النوع</label><select id="tType"><option value="in">وارد</option><option value="out">صادر</option></select></div></div><div class="field"><label>البيان</label><input id="tDesc"></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveTx()">حفظ</button>`); };
+window.openTransactionModal = function(){ window.openModal('إضافة قيد', `<div class="form-grid"><div class="field"><label>المبلغ</label><input type="number" id="tAmt"></div><div class="field"><label>النوع</label><select id="tType"><option value="in">وارد</option><option value="out">صادر</option></select></div></div><div class="field"><label>البيان</label><input id="tDesc"></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="window.saveTx()">حفظ</button>`); };
 window.saveTx = async function(){ const a=parseFloat(document.getElementById('tAmt').value); if(!a) return; await addDoc(collection(db,'transactions'), {uid:currentUser.uid, type:document.getElementById('tType').value, amount:a, date:today(), desc:document.getElementById('tDesc').value}); window.closeModal(); };
 
-window.openContactModal = function(){ openModal('إضافة جهة', `<div class="form-grid"><div class="field"><label>الاسم</label><input id="cName"></div><div class="field"><label>الرصيد</label><input type="number" id="cBal" value="0"></div></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveC()">حفظ</button>`); };
+window.openContactModal = function(){ window.openModal('إضافة جهة', `<div class="form-grid"><div class="field"><label>الاسم</label><input id="cName"></div><div class="field"><label>الرصيد</label><input type="number" id="cBal" value="0"></div></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="window.saveC()">حفظ</button>`); };
 window.saveC = async function(){ const n=document.getElementById('cName').value; if(!n) return; await addDoc(collection(db,'contacts'), {uid:currentUser.uid, name:n, balance:parseFloat(document.getElementById('cBal').value)||0}); window.closeModal(); };
 
-window.openStatement = function(id){ const c = data.contacts.find(x=>x.id===id); openModal('كشف: '+c.name, `<div style="text-align:center;margin-bottom:20px;font-size:22px;font-weight:900;color:var(--primary);">الرصيد: ${money(c.balance)}</div><button class="btn btn-block btn-primary" onclick="openPay('${id}')">تسجيل دفعة</button>`, `<button class="btn" onclick="window.closeModal()">إغلاق</button>`); };
-window.openPay = function(id){ openModal('سداد', `<div class="field"><label>المبلغ</label><input type="number" id="payAmt"></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="doPay('${id}')">حفظ</button>`); };
+window.openStatement = function(id){ const c = data.contacts.find(x=>x.id===id); window.openModal('كشف: '+c.name, `<div style="text-align:center;margin-bottom:20px;font-size:22px;font-weight:900;color:var(--primary);">الرصيد: ${money(c.balance)}</div><button class="btn btn-block btn-primary" onclick="window.openPay('${id}')">تسجيل دفعة</button>`, `<button class="btn" onclick="window.closeModal()">إغلاق</button>`); };
+window.openPay = function(id){ window.openModal('سداد', `<div class="field"><label>المبلغ</label><input type="number" id="payAmt"></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="window.doPay('${id}')">حفظ</button>`); };
 window.doPay = async function(id){ const amt = parseFloat(document.getElementById('payAmt').value); const c = data.contacts.find(x=>x.id===id); if(!amt) return; await updateDoc(doc(db,'contacts',id),{balance: c.balance + amt}); await addDoc(collection(db,'transactions'),{uid:currentUser.uid,type:'in',amount:amt,date:today(),desc:'دفعة من '+c.name}); window.closeModal(); };
 
-window.openTransferModal = function(){ openModal('حوالة', `<div class="field"><label>المبلغ</label><input type="number" id="trAmt"></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveTr()">حفظ</button>`); };
+window.openTransferModal = function(){ window.openModal('حوالة', `<div class="field"><label>المبلغ</label><input type="number" id="trAmt"></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="window.saveTr()">حفظ</button>`); };
 window.saveTr = async function(){ const a=parseFloat(document.getElementById('trAmt').value); if(!a) return; await addDoc(collection(db,'transactions'),{uid:currentUser.uid,type:'out',amount:a,date:today(),desc:'حوالة مالية'}); window.closeModal(); };
 
-window.openInvoiceModal = function(){ openModal('فاتورة', `<div class="field"><label>المبلغ</label><input type="number" id="iTot"></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveI()">حفظ</button>`); };
+window.openInvoiceModal = function(){ window.openModal('فاتورة', `<div class="field"><label>المبلغ</label><input type="number" id="iTot"></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="window.saveI()">حفظ</button>`); };
 window.saveI = async function(){ const t=parseFloat(document.getElementById('iTot').value); if(!t) return; await addDoc(collection(db,'invoices'),{uid:currentUser.uid,total:t,number:data.invoices.length+1,date:today()}); window.closeModal(); };
 
-window.openProductModal = function(){ openModal('صنف', `<div class="form-grid"><div class="field"><label>الاسم</label><input id="pName"></div><div class="field"><label>الكمية</label><input type="number" id="pQty" value="0"></div></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveP()">حفظ</button>`); };
+window.openProductModal = function(){ window.openModal('صنف', `<div class="form-grid"><div class="field"><label>الاسم</label><input id="pName"></div><div class="field"><label>الكمية</label><input type="number" id="pQty" value="0"></div></div>`, `<button class="btn" onclick="window.closeModal()">إلغاء</button><button class="btn btn-primary" onclick="window.saveP()">حفظ</button>`); };
 window.saveP = async function(){ const n=document.getElementById('pName').value; if(!n) return; await addDoc(collection(db,'products'),{uid:currentUser.uid,name:n,qty:parseFloat(document.getElementById('pQty').value)||0}); window.closeModal(); };
- 
+
 window.exportToCSV = function(){ if(!data.transactions.length) return alert('لا يوجد بيانات'); let csv = "\uFEFFالتاريخ,النوع,المبلغ,البيان\n"; data.transactions.forEach(t=>{ csv += `${t.date},${t.type==='in'?'وارد':'صادر'},${t.amount},${t.desc||''}\n`; }); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})); a.download = 'Report.csv'; a.click(); };
 window.incrementTasbeeh = function(){ const el = document.getElementById('tasbeehCount'); el.textContent = parseInt(el.textContent) + 1; };
 window.saveSettings = async function(){ data.settings.businessName = document.getElementById('setName').value || 'مشروعي'; data.settings.currency = document.getElementById('setCurrency').value || 'ر.ي'; await updateDoc(doc(db,'users',userDoc.id),{settings:data.settings}); alert('تم الحفظ'); };
