@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl"> 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,8 +9,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<style> 
-/* ================= الثيمات (جذابة ومتعددة) ================= */
+<style>
+/* ================= الثيمات ================= */
 :root, body.theme-emerald {
   --primary:#10b981; --primary-dark:#059669; --primary-light:#d1fae5;
   --bg:#f8fafc; --card:#ffffff; --text:#1e293b; --muted:#64748b;
@@ -34,7 +34,7 @@ body.dark {
   --bg:#0f172a; --card:#1e293b; --text:#f8fafc; --muted:#94a3b8; --border:#334155;
   --sidebar:#020617; --primary-light:rgba(255, 255, 255, 0.1);
 }
-body.dark .invoice-preview { background:#fff; color:#000; } /* الفاتورة تبقى بيضاء للطباعة */
+body.dark .invoice-preview { background:#fff; color:#000; } 
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Cairo',system-ui,sans-serif;background:var(--bg);color:var(--text);transition: background 0.3s, color 0.3s;}
@@ -230,7 +230,6 @@ tbody td { padding: 16px; border-top: 1px solid var(--border); white-space: nowr
     <header class="topbar">
       <div style="display:flex;align-items:center;gap:15px"><button type="button" class="menu-btn" onclick="toggleSidebar()">☰</button><h2 id="pageTitle">الرئيسية</h2></div>
       <div class="tools" style="display:flex; gap:15px; align-items:center;">
-        <!-- قائمة الثيمات -->
         <div style="position:relative;" class="dropdown">
           <button class="btn-icon" onclick="document.getElementById('themeMenu').classList.toggle('hidden')" style="font-size:22px;">🎨</button>
           <div id="themeMenu" class="hidden" style="position:absolute; top:40px; left:0; background:var(--card); border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow); padding:10px; display:flex; gap:10px; z-index:50;">
@@ -324,8 +323,48 @@ tbody td { padding: 16px; border-top: 1px solid var(--border); white-space: nowr
           </div>
 
           <div id="quranAudioTab" class="hidden">
-            <audio id="quranAudio" controls style="width:100%; margin-bottom:20px;"><source src="https://archive.org/download/leaale1438/29.mp3" type="audio/mpeg"></audio>
-            <p class="muted" style="text-align:center; font-weight:bold;">جزء عم - بصوت الشيخ محمد صديق المنشاوي</p>
+            <audio id="quranAudio" controls style="width:100%; margin-bottom:20px;" src="https://server8.mp3quran.net/minsh/078.mp3"></audio>
+            <p class="muted" style="text-align:center; font-weight:bold;">استماع للقرآن - بصوت الشيخ محمد صديق المنشاوي</p>
+            
+            <div class="surah-list" style="margin-top:15px; max-height: 250px; overflow-y: auto;">
+              <button class="surah-btn" onclick="playAudioFile('078')">سورة النبأ</button>
+              <button class="surah-btn" onclick="playAudioFile('079')">سورة النازعات</button>
+              <button class="surah-btn" onclick="playAudioFile('080')">سورة عبس</button>
+              <button class="surah-btn" onclick="playAudioFile('081')">سورة التكوير</button>
+              <button class="surah-btn" onclick="playAudioFile('082')">سورة الانفطار</button>
+              <button class="surah-btn" onclick="playAudioFile('083')">سورة المطففين</button>
+              <button class="surah-btn" onclick="playAudioFile('084')">سورة الانشقاق</button>
+              <button class="surah-btn" onclick="playAudioFile('085')">سورة البروج</button>
+              <button class="surah-btn" onclick="playAudioFile('086')">سورة الطارق</button>
+              <button class="surah-btn" onclick="playAudioFile('087')">سورة الأعلى</button>
+              <button class="surah-btn" onclick="playAudioFile('088')">سورة الغاشية</button>
+              <button class="surah-btn" onclick="playAudioFile('089')">سورة الفجر</button>
+              <button class="surah-btn" onclick="playAudioFile('090')">سورة البلد</button>
+              <button class="surah-btn" onclick="playAudioFile('091')">سورة الشمس</button>
+              <button class="surah-btn" onclick="playAudioFile('092')">سورة الليل</button>
+              <button class="surah-btn" onclick="playAudioFile('093')">سورة الضحى</button>
+              <button class="surah-btn" onclick="playAudioFile('094')">سورة الشرح</button>
+              <button class="surah-btn" onclick="playAudioFile('095')">سورة التين</button>
+              <button class="surah-btn" onclick="playAudioFile('096')">سورة العلق</button>
+              <button class="surah-btn" onclick="playAudioFile('097')">سورة القدر</button>
+              <button class="surah-btn" onclick="playAudioFile('098')">سورة البينة</button>
+              <button class="surah-btn" onclick="playAudioFile('099')">سورة الزلزلة</button>
+              <button class="surah-btn" onclick="playAudioFile('100')">سورة العاديات</button>
+              <button class="surah-btn" onclick="playAudioFile('101')">سورة القارعة</button>
+              <button class="surah-btn" onclick="playAudioFile('102')">سورة التكاثر</button>
+              <button class="surah-btn" onclick="playAudioFile('103')">سورة العصر</button>
+              <button class="surah-btn" onclick="playAudioFile('104')">سورة الهمزة</button>
+              <button class="surah-btn" onclick="playAudioFile('105')">سورة الفيل</button>
+              <button class="surah-btn" onclick="playAudioFile('106')">سورة قريش</button>
+              <button class="surah-btn" onclick="playAudioFile('107')">سورة الماعون</button>
+              <button class="surah-btn" onclick="playAudioFile('108')">سورة الكوثر</button>
+              <button class="surah-btn" onclick="playAudioFile('109')">سورة الكافرون</button>
+              <button class="surah-btn" onclick="playAudioFile('110')">سورة النصر</button>
+              <button class="surah-btn" onclick="playAudioFile('111')">سورة المسد</button>
+              <button class="surah-btn" onclick="playAudioFile('112')">سورة الإخلاص</button>
+              <button class="surah-btn" onclick="playAudioFile('113')">سورة الفلق</button>
+              <button class="surah-btn" onclick="playAudioFile('114')">سورة الناس</button>
+            </div>
           </div>
 
           <div id="quranReadTab">
@@ -395,7 +434,7 @@ tbody td { padding: 16px; border-top: 1px solid var(--border); white-space: nowr
   <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.227 0-5.834 2.607-5.834 5.834 0 1.025.268 2.021.778 2.904l-.83 3.031 3.113-.816c.85.464 1.81.708 2.773.708 3.227 0 5.834-2.607 5.834-5.834s-2.607-5.834-5.834-5.834zm3.435 8.286c-.153.428-.883.81-1.214.84-.32.03-.646.046-.996-.051-.35-.098-1.003-.39-1.902-1.169-.753-.65-1.25-1.457-1.397-1.705-.147-.248-.368-.797-.095-1.22.273-.422.686-.537.915-.537.229 0 .458.009.656.018.204.01.477-.077.747.569.27.646.688 1.678.75 1.8.062.122.103.265.02.428-.083.163-.124.265-.249.408-.124.143-.262.319-.374.428-.124.122-.255.255-.11.51.145.255.646 1.068 1.388 1.731.976.872 1.567 1.021 1.822 1.143.255.122.404.102.553-.061.149-.163.646-.751.817-1.006.171-.255.343-.214.579-.122.235.092 1.487.703 1.743.83.255.128.425.192.486.3.061.108.061.622-.092 1.05z"/></svg>
 </a>
 
-<!-- نافذة المودال العامة -->
+<!-- نافذة المودال -->
 <div id="overlay" class="overlay hidden">
   <div class="modal">
     <div class="modal-head"><h3 id="modalTitle"></h3><button type="button" class="btn-icon" onclick="closeModal()">✕</button></div>
@@ -437,7 +476,6 @@ function toggleDarkMode() {
   localStorage.setItem('mizan_dark', isDark);
   document.getElementById('darkToggle').textContent = isDark ? '☀️' : '🌙';
 }
-// استرجاع الإعدادات عند التحميل
 window.onload = function() {
   const savedTheme = localStorage.getItem('mizan_theme') || 'theme-emerald';
   document.body.className = savedTheme;
@@ -755,6 +793,12 @@ function switchQuranTab(tab, btn) {
   document.getElementById('quranReadTab').classList.toggle('hidden', tab !== 'read');
 }
 
+function playAudioFile(surahNumber) {
+  const audio = document.getElementById('quranAudio');
+  audio.src = `https://server8.mp3quran.net/minsh/${surahNumber}.mp3`;
+  audio.play();
+}
+
 const surahNames = ["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
 function populateSurahs() {
   const select = document.getElementById('surahSelect');
@@ -828,9 +872,9 @@ function exportToCSV(){ if(!data.transactions.length) return alert('لا يوج�
 async function loadAdminData(){ const snap = await db.collection('users').get(); let h = ''; snap.forEach(d=>{ const u = d.data(); h += `<tr><td>${u.name}</td><td>${u.subscription?.plan}</td><td>${u.subscription?.active?'<span class="tag in">نشط</span>':'<span class="tag out">موقوف</span>'}</td><td><button type="button" class="btn btn-sm btn-primary" onclick="updateSub('${d.id}')">تفعيل</button></td></tr>`; }); document.getElementById('adminTable').innerHTML = h; }
 async function updateSub(id){ await db.collection('users').doc(id).update({'subscription.plan':'yearly','subscription.active':true}); alert('تم التفعيل'); loadAdminData(); }
 </script>
-  
-  <script>
-  // تسجيل Service Worker ليعمل التطبيق بدون إنترنت
+
+<!-- كود تشغيل التطبيق بدون إنترنت -->
+<script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
@@ -839,5 +883,6 @@ async function updateSub(id){ await db.collection('users').doc(id).update({'subs
     });
   }
 </script>
+
 </body>
 </html>
