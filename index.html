@@ -562,7 +562,8 @@ async function doRegister(){
     try { 
         const c = await auth.createUserWithEmailAndPassword(e,p); 
         await c.user.updateProfile({displayName:n}); 
-        await db.collection('users').add({
+        // تحديث هام: استخدام .doc(uid).set() ليتوافق مع قواعد الحماية الجديدة
+        await db.collection('users').doc(c.user.uid).set({
             uid: c.user.uid, 
             name: n, 
             email: e, 
@@ -581,22 +582,29 @@ auth.onAuthStateChanged(async (u) => {
     currentUser = u; 
     document.getElementById('authScreen').classList.add('hidden'); 
     document.getElementById('app').classList.remove('hidden');
-    const snap = await db.collection("users").where("uid", "==", u.uid).get();
-    if(!snap.empty){ 
-        userDoc = { id: snap.docs[0].id, ...snap.docs[0].data() }; 
-        if(userDoc.settings) data.settings = { ...data.settings, ...userDoc.settings }; 
-        isAdminUser = userDoc.subscription && userDoc.subscription.plan === 'admin'; 
-        document.getElementById('navAdmin').classList.toggle('hidden', !isAdminUser); 
-        document.getElementById('bizBadge').textContent = data.settings.businessName; 
-        document.getElementById('setName').value = data.settings.businessName || '';
-        document.getElementById('setCurrency').value = data.settings.currency || '';
-        document.getElementById('setCity').value = data.settings.city || 'Sanaa';
-        document.getElementById('setCountry').value = data.settings.country || 'Yemen';
-        if(data.settings.logoBase64) {
-            document.getElementById('logoPreview').src = data.settings.logoBase64;
-            document.getElementById('logoPreview').style.display = 'block';
+    
+    // تحديث هام: جلب بيانات المستخدم بواسطة الـ UID مباشرة (أسرع وأكثر أماناً)
+    try {
+        const userDocRef = await db.collection("users").doc(u.uid).get();
+        if(userDocRef.exists){ 
+            userDoc = { id: userDocRef.id, ...userDocRef.data() }; 
+            if(userDoc.settings) data.settings = { ...data.settings, ...userDoc.settings }; 
+            isAdminUser = userDoc.subscription && userDoc.subscription.plan === 'admin'; 
+            document.getElementById('navAdmin').classList.toggle('hidden', !isAdminUser); 
+            document.getElementById('bizBadge').textContent = data.settings.businessName; 
+            document.getElementById('setName').value = data.settings.businessName || '';
+            document.getElementById('setCurrency').value = data.settings.currency || '';
+            document.getElementById('setCity').value = data.settings.city || 'Sanaa';
+            document.getElementById('setCountry').value = data.settings.country || 'Yemen';
+            if(data.settings.logoBase64) {
+                document.getElementById('logoPreview').src = data.settings.logoBase64;
+                document.getElementById('logoPreview').style.display = 'block';
+            }
         }
+    } catch(err) {
+        console.log("خطأ في جلب بيانات المستخدم: ", err);
     }
+    
     subscribeData();
     populateSurahs();
   } else { 
