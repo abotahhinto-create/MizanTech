@@ -496,7 +496,14 @@ tbody tr:hover td { background: var(--bg); }
 
 <script>
 // ================= إعدادات Firebase =================
-const firebaseConfig = { apiKey: "AIzaSyBlaWceELg_C66xKSNtvdoiOPHI0dfQCkM", authDomain: "mizantech.firebaseapp.com", projectId: "mizantech", storageBucket: "mizantech.firebasestorage.app", messagingSenderId: "1030540348490", appId: "1:1030540348490:web:430dcbc34015a103c42ab3" };
+const firebaseConfig = { 
+    apiKey: "AIzaSyBlaWceELg_C66xKSNtvdoiOPHI0dfQCkM", 
+    authDomain: "mizantech.firebaseapp.com", 
+    projectId: "mizantech", 
+    storageBucket: "mizantech.firebasestorage.app", 
+    messagingSenderId: "1030540348490", 
+    appId: "1:1030540348490:web:430dcbc34015a103c42ab3" 
+};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
