@@ -47,6 +47,7 @@ button,input,select,textarea{font-family:inherit;font-size:16px;border:none;outl
 .btn:active { transform: scale(0.95); }
 .btn-primary { background: var(--primary); color: #fff; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);}
 .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+.btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none;}
 .btn-danger { background: #fee2e2; color: #991b1b; }
 .btn-danger:hover { background: #fca5a5; }
 .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 8px; }
@@ -157,6 +158,25 @@ tbody tr:hover td { background: var(--bg); }
 .inv-modern .inv-total { color:var(--primary); }
 .inv-modern .inv-footer { border-top: none; }
 
+/* التنسيق البسيط */
+.inv-minimal { border: 1px solid #ddd; }
+.inv-minimal .inv-header { border-bottom: 1px solid #eee; }
+.inv-minimal .inv-table th { border-bottom: 2px solid #eee; }
+.inv-minimal .inv-table td { border-bottom: 1px solid #eee; }
+.inv-minimal .inv-footer { border-top: 1px solid #eee; }
+
+/* التنسيق الأنيق */
+.inv-elegant { border-top: 10px solid #8b5cf6; background: #faf5ff; }
+.inv-elegant .inv-header { border-bottom: 2px dashed #8b5cf6; }
+.inv-elegant .inv-table th { background: #ede9fe; color: #6d28d9; }
+.inv-elegant .inv-total { color: #6d28d9; }
+
+/* التنسيق المضغوط */
+.inv-compact { padding: 15px; font-size: 12px; }
+.inv-compact .inv-header { padding-bottom: 5px; margin-bottom: 10px; }
+.inv-compact .inv-table th, .inv-compact .inv-table td { padding: 5px; }
+.inv-compact .inv-footer { margin-top: 15px; padding-top: 10px; }
+
 /* إعدادات الطباعة */
 @media print {
   body * { visibility: hidden; }
@@ -235,6 +255,7 @@ tbody tr:hover td { background: var(--bg); }
       <button type="button" class="nav-item" data-page="quran" onclick="navigate('quran')"><span class="ic">📖</span> القرآن الكريم</button>
       <button type="button" class="nav-item" data-page="tasbeeh" onclick="navigate('tasbeeh')"><span class="ic">📿</span> التسبيح</button>
       <button type="button" class="nav-item" data-page="zakat" onclick="navigate('zakat')"><span class="ic">🤲</span> حاسبة الزكاة</button>
+      <button type="button" class="nav-item" data-page="help" onclick="navigate('help')"><span class="ic">📖</span> شرح الاستخدام</button>
       <button type="button" class="nav-item" data-page="settings" onclick="navigate('settings')"><span class="ic">⚙️</span> الإعدادات</button>
     </nav>
     <div class="sidebar-foot">
@@ -271,6 +292,7 @@ tbody tr:hover td { background: var(--bg); }
     <div class="content">
       <!-- الرئيسية -->
       <section id="page-dashboard" class="page active">
+        <div id="usageAlert"></div>
         <div id="alertsContainer"></div>
         <div class="stats-grid" id="statsGrid"></div>
         <div class="grid-menu">
@@ -441,6 +463,22 @@ tbody tr:hover td { background: var(--bg); }
           </div>
         </div>
       </section>
+
+      <!-- شرح الاستخدام -->
+      <section id="page-help" class="page">
+        <div class="card">
+          <div class="card-head"><h3>📖 دليل الاستخدام الشامل</h3></div>
+          <div style="line-height: 2; font-size: 15px;">
+            <p style="margin-bottom:10px;"><b>1. لوحة التحكم والرئيسية:</b> تعرض لك ملخصاً سريعاً لرصيدك الكلي، إجمالي الوارد، والمصروفات، مع تنبيهات بنقص المخزون.</p>
+            <p style="margin-bottom:10px;"><b>2. الفواتير:</b> اضغط على "فاتورة جديدة"، اختر الجهة (أو أضف جهة أولاً)، وأضف الأصناف. يمكنك طباعة الفاتورة أو حفظها بصيغة PDF بتصاميم مختلفة.</p>
+            <p style="margin-bottom:10px;"><b>3. الخزينة والمصروفات:</b> سجل دخول الأموال بـ "سند قبض"، وخروجها بـ "سند صرف" (اختر التصنيف: رواتب، إيجارات، إلخ) لتعرف أين تذهب أموالك.</p>
+            <p style="margin-bottom:10px;"><b>4. الحسابات (العملاء):</b> أضف عملاءك، وتابع المبالغ التي لهم (ديون لك) أو التي عليك (ديون عليك) من خلال كشف الحساب.</p>
+            <p style="margin-bottom:10px;"><b>5. التقارير:</b> تعرض لك إجمالي المبيعات، المصروفات، وصافي الربح بشكل لحظي.</p>
+            <p style="margin-bottom:10px;"><b>6. المهام والمذكرة:</b> لتنظيم يومك وكتابة ملاحظاتك السريعة.</p>
+            <p><b>7. الجانب الروحي:</b> مواقيت الصلاة، القرآن الكريم، التسبيح، وحاسبة الزكاة.</p>
+          </div>
+        </div>
+      </section>
       
       <!-- الإعدادات -->
       <section id="page-settings" class="page">
@@ -521,7 +559,6 @@ function closeModal(){ document.getElementById('overlay').classList.add('hidden'
 function checkLimit() {
   if (isAdminUser) return true; // المدير بلا حدود
   
-  // فحص الخطة المجانية
   if (userDoc && userDoc.subscription && userDoc.subscription.plan === 'free') {
     const totalOperations = data.invoices.length + data.transactions.length;
     if (totalOperations >= 30) {
@@ -557,7 +594,7 @@ window.onload = function() {
   }
 }
 
-// ================= المصادقة (تسجيل الدخول والإنشاء) =================
+// ================= المصادقة =================
 function switchAuth(m){ 
     document.getElementById('tabLogin').classList.toggle('active', m==='login'); 
     document.getElementById('tabRegister').classList.toggle('active', m==='register'); 
@@ -571,17 +608,10 @@ async function doLogin(){
     if(!e || !p) return alert('⚠️ أدخل البريد وكلمة المرور'); 
     
     const btn = document.querySelector('#loginForm .btn-primary');
-    const originalText = btn.textContent;
-    btn.textContent = '⏳ جاري الدخول...';
-    btn.disabled = true;
+    btn.textContent = '⏳ جاري الدخول...'; btn.disabled = true;
 
-    try { 
-        await auth.signInWithEmailAndPassword(e,p); 
-    } catch(err) { 
-        alert('❌ خطأ في الدخول: ' + err.message); 
-        btn.textContent = originalText;
-        btn.disabled = false;
-    } 
+    try { await auth.signInWithEmailAndPassword(e,p); } 
+    catch(err) { alert('❌ خطأ في الدخول: ' + err.message); btn.textContent = 'دخول'; btn.disabled = false; } 
 }
 
 async function doRegister(){ 
@@ -593,26 +623,16 @@ async function doRegister(){
     if(!e.includes('@') || e.includes(' ')) return alert('⚠️ البريد الإلكتروني غير صحيح (لا تضع مسافات)'); 
 
     const btn = document.querySelector('#registerForm .btn-primary');
-    const originalText = btn.textContent;
-    btn.textContent = '⏳ جاري إنشاء الحساب...';
-    btn.disabled = true;
+    btn.textContent = '⏳ جاري إنشاء الحساب...'; btn.disabled = true;
 
     try { 
         const c = await auth.createUserWithEmailAndPassword(e,p); 
         await c.user.updateProfile({displayName:n}); 
         await db.collection('users').doc(c.user.uid).set({
-            uid: c.user.uid, 
-            name: n, 
-            email: e, 
-            subscription: {plan:'free', active:false}, 
-            settings: {businessName:'مشروعي', currency:'ر.ي', logoBase64:'', city:'Sanaa', country:'Yemen'}
+            uid: c.user.uid, name: n, email: e, subscription: {plan:'free', active:false}, settings: {businessName:'مشروعي', currency:'ر.ي', logoBase64:'', city:'Sanaa', country:'Yemen'}
         }); 
         alert('✅ تم إنشاء الحساب بنجاح!');
-    } catch(err) { 
-        alert('❌ خطأ في التسجيل: ' + err.message); 
-        btn.textContent = originalText;
-        btn.disabled = false;
-    } 
+    } catch(err) { alert('❌ خطأ في التسجيل: ' + err.message); btn.textContent = 'إنشاء الحساب'; btn.disabled = false; } 
 }
 
 function logout(){ unsubscribers.forEach(f=>f()); auth.signOut(); }
@@ -640,7 +660,7 @@ auth.onAuthStateChanged(async (u) => {
                 document.getElementById('logoPreview').style.display = 'block';
             }
         }
-    } catch(err) { console.log("خطأ في جلب بيانات المستخدم: ", err); }
+    } catch(err) { console.log(err); }
     
     subscribeData();
     populateSurahs();
@@ -649,7 +669,6 @@ auth.onAuthStateChanged(async (u) => {
   }
 });
 
-// ================= جلب البيانات (الاشتراكات) =================
 function subscribeData(){
   unsubscribers = []; const uid = currentUser.uid;
   unsubscribers.push(db.collection('transactions').where('uid','==',uid).onSnapshot(s => { data.transactions = s.docs.map(d=>({id:d.id,...d.data()})); renderDash(); }));
@@ -660,13 +679,12 @@ function subscribeData(){
   unsubscribers.push(db.collection('notes').where('uid','==',uid).onSnapshot(s => { data.notes = s.docs.map(d=>({id:d.id,...d.data()})); renderNotes(); }));
 }
 
-// ================= التنقل =================
 function navigate(p){ 
     document.querySelectorAll('.page').forEach(x=>x.classList.remove('active')); 
     document.getElementById('page-'+p).classList.add('active'); 
     document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active')); 
     document.querySelector(`.nav-item[data-page="${p}"]`)?.classList.add('active'); 
-    const titles = {dashboard:'الرئيسية', admin:'لوحة التحكم', reports:'التقارير المالية', cash:'الخزينة والمصروفات', contacts:'الحسابات', invoices:'الفواتير', inventory:'المخزون', tasks:'المهام اليومية', notes:'المذكرة', prayer:'مواقيت الصلاة', quran:'القرآن', tasbeeh:'التسبيح', zakat:'الزكاة', settings:'الإعدادات'}; 
+    const titles = {dashboard:'الرئيسية', admin:'لوحة التحكم', reports:'التقارير المالية', cash:'الخزينة والمصروفات', contacts:'الحسابات', invoices:'الفواتير', inventory:'المخزون', tasks:'المهام اليومية', notes:'المذكرة', prayer:'مواقيت الصلاة', quran:'القرآن', tasbeeh:'التسبيح', zakat:'الزكاة', help:'شرح الاستخدام', settings:'الإعدادات'}; 
     document.getElementById('pageTitle').textContent = titles[p] || ''; 
     document.getElementById('sidebar').classList.remove('open'); 
     if(p==='admin') loadAdminData(); 
@@ -678,16 +696,8 @@ function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('o
 // ================= التقارير المالية =================
 function renderReports() {
   let totalSales = 0, totalPurchases = 0, totalExpenses = 0;
-  
-  data.invoices.forEach(inv => {
-    if (inv.type === 'sale') totalSales += inv.total;
-    else if (inv.type === 'purchase') totalPurchases += inv.total;
-  });
-
-  data.transactions.forEach(t => {
-    if (t.type === 'out' && t.category !== 'مشتريات') totalExpenses += t.amount;
-  });
-
+  data.invoices.forEach(inv => { if (inv.type === 'sale') totalSales += inv.total; else if (inv.type === 'purchase') totalPurchases += inv.total; });
+  data.transactions.forEach(t => { if (t.type === 'out' && t.category !== 'مشتريات') totalExpenses += t.amount; });
   const netProfit = totalSales - totalPurchases - totalExpenses;
 
   document.getElementById('reportsStatsGrid').innerHTML = `
@@ -704,6 +714,26 @@ function renderReports() {
 
 // ================= الرسم (لوحة التحكم والجداول) =================
 function renderDash(){
+  // شريط استخدام العمليات
+  if (!isAdminUser && userDoc && userDoc.subscription && userDoc.subscription.plan === 'free') {
+      const used = data.invoices.length + data.transactions.length;
+      const percent = Math.min((used / 30) * 100, 100);
+      document.getElementById('usageAlert').innerHTML = `
+        <div style="background:var(--card); padding:15px; border-radius:12px; margin-bottom:20px; border:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:13px; font-weight:bold;">
+                <span>العمليات المستخدمة (النسخة التجريبية)</span>
+                <span style="color:${percent > 80 ? 'var(--danger)' : 'var(--primary)'};">${used} من أصل 30</span>
+            </div>
+            <div style="width:100%; height:8px; background:#e2e8f0; border-radius:10px; overflow:hidden;">
+                <div style="height:100%; width:${percent}%; background:${percent > 80 ? 'var(--danger)' : 'var(--primary)'}; transition: width 0.5s;"></div>
+            </div>
+            ${percent >= 100 ? '<div style="color:var(--danger); font-size:12px; margin-top:5px; font-weight:bold;">⚠️ لقد وصلت للحد الأقصى! يرجى الترقية للمتابعة.</div>' : ''}
+        </div>
+      `;
+  } else {
+      document.getElementById('usageAlert').innerHTML = '';
+  }
+
   const lowStock = data.products.filter(p => p.qty <= 5);
   const alertsDiv = document.getElementById('alertsContainer');
   if(lowStock.length > 0) {
@@ -725,10 +755,7 @@ function renderDash(){
 
 function renderContacts(){
   let totalPositive = 0, totalNegative = 0;
-  data.contacts.forEach(c => {
-    if (c.balance > 0) totalPositive += c.balance;
-    else totalNegative += Math.abs(c.balance);
-  });
+  data.contacts.forEach(c => { if (c.balance > 0) totalPositive += c.balance; else totalNegative += Math.abs(c.balance); });
 
   document.getElementById('contactsSummary').innerHTML = `
     <div class="stat" style="flex:1; padding:15px;"><div class="s-label">الديون (لك)</div><div class="s-value" style="color:var(--primary); font-size:18px;">${money(totalPositive)}</div></div>
@@ -787,7 +814,7 @@ function openInvoiceModal() {
     <hr style="margin:15px 0; border-color:var(--border);">
     <div class="form-grid"><div class="field"><label>اسم المستلم</label><input id="invReceiver" placeholder="اسم المستلم"></div><div class="field"><label>التوقيع</label><input id="invSignature" placeholder="التوقيع"></div></div>
   `;
-  const foot = `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveInvoice()">💾 حفظ وطباعة الفاتورة</button>`;
+  const foot = `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveInvoice(this)">💾 حفظ وطباعة الفاتورة</button>`;
   openModal('إنشاء فاتورة', body, foot);
   addInvItem();
 }
@@ -807,8 +834,10 @@ function calcItem(el) {
   row.querySelector('.item-total').value = (qty * price).toFixed(2);
 }
 
-async function saveInvoice() {
-  if (!checkLimit()) return; // <--- فحص الحد
+async function saveInvoice(btn) {
+  if (!checkLimit()) return; 
+  if(btn.disabled) return; // منع التكرار
+  
   try {
     const contactId = document.getElementById('invContact').value;
     const contact = data.contacts.find(c => c.id === contactId);
@@ -820,6 +849,10 @@ async function saveInvoice() {
       if (name) items.push({ name, qty, price, total: qty * price });
     });
     if (!items.length) return alert('⚠️ أضف صنفًا واحدًا على الأقل');
+    
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري الحفظ...';
+
     const total = items.reduce((sum, i) => sum + i.total, 0);
     
     const docRef = await db.collection('invoices').add({
@@ -829,10 +862,15 @@ async function saveInvoice() {
       signature: document.getElementById('invSignature').value, items, total, createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     
+    alert('✅ تم حفظ الفاتورة بنجاح!');
     closeModal();
     setTimeout(() => { viewInvoice(docRef.id); }, 500);
     
-  } catch (error) { alert('❌ حدث خطأ أثناء الحفظ: ' + error.message); }
+  } catch (error) { 
+    alert('❌ حدث خطأ أثناء الحفظ: ' + error.message); 
+    btn.disabled = false;
+    btn.textContent = '💾 حفظ وطباعة الفاتورة';
+  }
 }
 
 function viewInvoice(id) {
@@ -843,13 +881,26 @@ function viewInvoice(id) {
   const itemsHtml = inv.items.map(it => `<tr><td>${it.name}</td><td>${it.qty}</td><td>${money(it.price)}</td><td>${money(it.total)}</td></tr>`).join('');
   
   const html = `
-    <div style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
+    <div style="display:flex; gap:10px; margin-bottom:15px; justify-content:center; flex-wrap:wrap;">
       <button class="btn btn-sm" onclick="changeInvTheme('inv-classic')">كلاسيكي</button>
       <button class="btn btn-sm" onclick="changeInvTheme('inv-royal')">ملكي</button>
       <button class="btn btn-sm" onclick="changeInvTheme('inv-modern')">حديث</button>
+      <button class="btn btn-sm" onclick="changeInvTheme('inv-minimal')">بسيط</button>
+      <button class="btn btn-sm" onclick="changeInvTheme('inv-elegant')">أنيق</button>
+      <button class="btn btn-sm" onclick="changeInvTheme('inv-compact')">مضغوط</button>
+    </div>
+    <div style="display:flex; gap:10px; margin-bottom:15px; justify-content:center;">
+      <button class="btn btn-sm btn-primary" onclick="changeHeaderAlign('right')">اسم الشركة يمين</button>
+      <button class="btn btn-sm btn-primary" onclick="changeHeaderAlign('center')">اسم الشركة وسط</button>
+      <button class="btn btn-sm btn-primary" onclick="changeHeaderAlign('left')">اسم الشركة يسار</button>
     </div>
     <div id="invoicePreview" class="invoice-preview inv-classic">
-      <div class="inv-header"><div>${logo}</div><div style="text-align:left;"><h3>${data.settings.businessName}</h3><p>فاتورة ${typeLabel} #${inv.number}</p><p>التاريخ: ${inv.date}</p></div></div>
+      <div class="inv-header" id="invHeader" style="justify-content: space-between;">
+        <div>${logo}</div>
+        <div id="invCompanyName" style="text-align:left;">
+            <h3>${data.settings.businessName}</h3><p>فاتورة ${typeLabel} #${inv.number}</p><p>التاريخ: ${inv.date}</p>
+        </div>
+      </div>
       <p><strong>الجهة:</strong> ${inv.contactName}</p>
       <table class="inv-table"><thead><tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody>${itemsHtml}</tbody></table>
       <div class="inv-total">الإجمالي: ${money(inv.total)}</div>
@@ -868,16 +919,20 @@ function changeInvTheme(theme) {
   inv.className = 'invoice-preview ' + theme;
 }
 
-async function exportPDF() {
-  const el = document.getElementById('invoicePreview');
-  const canvas = await html2canvas(el, { scale: 2, useCORS: true });
-  const imgData = canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF('p', 'mm', 'a4');
-  const pdfW = pdf.internal.pageSize.getWidth();
-  const pdfH = (canvas.height * pdfW) / canvas.width;
-  pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
-  pdf.save(`Invoice_${Date.now()}.pdf`);
+function changeHeaderAlign(pos) {
+    const container = document.getElementById('invHeader');
+    const nameDiv = document.getElementById('invCompanyName');
+    
+    if(pos === 'right') {
+        container.style.justifyContent = 'flex-start';
+        nameDiv.style.textAlign = 'right';
+    } else if (pos === 'center') {
+        container.style.justifyContent = 'center';
+        nameDiv.style.textAlign = 'center';
+    } else {
+        container.style.justifyContent = 'space-between';
+        nameDiv.style.textAlign = 'left';
+    }
 }
 
 // ================= الحذف والتراجع =================
@@ -891,30 +946,34 @@ async function deleteNote(id) { if(confirm('حذف الملاحظة؟')) await d
 // ================= سندات القبض والصرف =================
 function openReceiptModal() {
   if (!checkLimit()) return;
-  openModal('سند قبض (إيداع)', `<div class="field"><label>المبلغ</label><input type="number" id="rcpAmt"></div><div class="field"><label>البيان (من أين جاء المبلغ؟)</label><input id="rcpDesc" placeholder="مثال: دفعة من عميل، إيداع رأس مال..."></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveReceipt()">💾 حفظ سند القبض</button>`);
+  openModal('سند قبض (إيداع)', `<div class="field"><label>المبلغ</label><input type="number" id="rcpAmt"></div><div class="field"><label>البيان (من أين جاء المبلغ؟)</label><input id="rcpDesc" placeholder="مثال: دفعة من عميل، إيداع رأس مال..."></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveReceipt(this)">💾 حفظ سند القبض</button>`);
 }
-async function saveReceipt() {
+async function saveReceipt(btn) {
   if (!checkLimit()) return;
+  if(btn.disabled) return;
+  btn.disabled = true; btn.textContent = '⏳ جاري الحفظ...';
   try {
     const a = parseFloat(document.getElementById('rcpAmt').value);
-    if(!a) return alert('⚠️ يرجى إدخال المبلغ');
+    if(!a) throw new Error('يرجى إدخال المبلغ');
     await db.collection('transactions').add({ uid: currentUser.uid, type: 'in', amount: a, date: today(), category: 'قبض', desc: document.getElementById('rcpDesc').value });
     alert('✅ تم حفظ سند القبض بنجاح!'); closeModal();
-  } catch (error) { alert('❌ خطأ: ' + error.message); }
+  } catch (error) { alert('❌ خطأ: ' + error.message); btn.disabled = false; btn.textContent = '💾 حفظ سند القبض'; }
 }
 
 function openExpenseModal() {
   if (!checkLimit()) return;
-  openModal('سند صرف (مصروفات)', `<div class="field"><label>المبلغ</label><input type="number" id="expAmt"></div><div class="field"><label>نوع المصروف (التصنيف)</label><select id="expCategory"><option value="رواتب">رواتب وأجور</option><option value="إيجارات">إيجارات</option><option value="فواتير">فواتير (كهرباء، ماء، نت)</option><option value="مشتريات">مشتريات بضاعة</option><option value="صيانة">صيانة وإصلاحات</option><option value="تسويق">تسويق وإعلانات</option><option value="أخرى">مصروفات أخرى</option></select></div><div class="field"><label>البيان / تفاصيل المصروف</label><input id="expDesc" placeholder="مثال: راتب الشهر، فاتورة كهرباء..."></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveExpense()">💾 حفظ سند الصرف</button>`);
+  openModal('سند صرف (مصروفات)', `<div class="field"><label>المبلغ</label><input type="number" id="expAmt"></div><div class="field"><label>نوع المصروف (التصنيف)</label><select id="expCategory"><option value="رواتب">رواتب وأجور</option><option value="إيجارات">إيجارات</option><option value="فواتير">فواتير (كهرباء، ماء، نت)</option><option value="مشتريات">مشتريات بضاعة</option><option value="صيانة">صيانة وإصلاحات</option><option value="تسويق">تسويق وإعلانات</option><option value="أخرى">مصروفات أخرى</option></select></div><div class="field"><label>البيان / تفاصيل المصروف</label><input id="expDesc" placeholder="مثال: راتب الشهر، فاتورة كهرباء..."></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveExpense(this)">💾 حفظ سند الصرف</button>`);
 }
-async function saveExpense() {
+async function saveExpense(btn) {
   if (!checkLimit()) return;
+  if(btn.disabled) return;
+  btn.disabled = true; btn.textContent = '⏳ جاري الحفظ...';
   try {
     const a = parseFloat(document.getElementById('expAmt').value);
-    if(!a) return alert('⚠️ يرجى إدخال المبلغ');
+    if(!a) throw new Error('يرجى إدخال المبلغ');
     await db.collection('transactions').add({ uid: currentUser.uid, type: 'out', amount: a, date: today(), category: document.getElementById('expCategory').value, desc: document.getElementById('expDesc').value });
     alert('✅ تم حفظ سند الصرف بنجاح!'); closeModal();
-  } catch (error) { alert('❌ خطأ: ' + error.message); }
+  } catch (error) { alert('❌ خطأ: ' + error.message); btn.disabled = false; btn.textContent = '💾 حفظ سند الصرف'; }
 }
 
 // ================= كشف الحساب المتطور =================
@@ -942,51 +1001,59 @@ function openStatement(id){
   `, `<button type="button" class="btn" onclick="closeModal()">رجوع</button>`); 
 }
 
-function openPay(id){ openModal('سداد دفعة', `<div class="field"><label>المبلغ</label><input type="number" id="payAmt"></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="doPay('${id}')">💾 حفظ الدفعة</button>`); }
-async function doPay(id){ 
+function openPay(id){ openModal('سداد دفعة', `<div class="field"><label>المبلغ</label><input type="number" id="payAmt"></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="doPay('${id}', this)">💾 حفظ الدفعة</button>`); }
+async function doPay(id, btn){ 
+  if(btn.disabled) return;
+  btn.disabled = true; btn.textContent = '⏳ جاري الحفظ...';
   try {
     const amt = parseFloat(document.getElementById('payAmt').value); const c = data.contacts.find(x=>x.id===id); 
-    if(!amt) return alert('⚠️ يرجى إدخال المبلغ');
+    if(!amt) throw new Error('يرجى إدخال المبلغ');
     await db.collection('contacts').doc(id).update({balance: c.balance + amt}); 
     await db.collection('transactions').add({uid:currentUser.uid,type:'in',amount:amt,date:today(),category:'سداد عميل',desc:'دفعة من '+c.name}); 
     alert('✅ تم تسجيل الدفعة بنجاح!'); closeModal(); 
-  } catch (error) { alert('❌ خطأ: ' + error.message); }
+  } catch (error) { alert('❌ خطأ: ' + error.message); btn.disabled = false; btn.textContent = '💾 حفظ الدفعة'; }
 }
 
 // ================= دوال مساعدة =================
 function openContactModal(){ 
   if (!checkLimit()) return;
-  openModal('إضافة حساب جديد', `<div class="form-grid"><div class="field"><label>اسم الحساب (العميل/المورد)</label><input id="cName"></div><div class="field"><label>الرصيد الافتتاحي</label><input type="number" id="cBal" value="0"></div></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveC()">💾 حفظ الحساب</button>`); 
+  openModal('إضافة حساب جديد', `<div class="form-grid"><div class="field"><label>اسم الحساب (العميل/المورد)</label><input id="cName"></div><div class="field"><label>الرصيد الافتتاحي</label><input type="number" id="cBal" value="0"></div></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveC(this)">💾 حفظ الحساب</button>`); 
 }
-async function saveC(){ 
+async function saveC(btn){ 
   if (!checkLimit()) return;
+  if(btn.disabled) return;
+  btn.disabled = true; btn.textContent = '⏳ جاري الحفظ...';
   try {
-    const n = document.getElementById('cName').value; if(!n) return alert('⚠️ يرجى كتابة اسم الحساب');
+    const n = document.getElementById('cName').value; if(!n) throw new Error('يرجى كتابة اسم الحساب');
     await db.collection('contacts').add({uid:currentUser.uid, name:n, balance:parseFloat(document.getElementById('cBal').value)||0}); 
     alert('✅ تم إضافة الحساب بنجاح!'); closeModal(); 
-  } catch (error) { alert('❌ خطأ: ' + error.message); }
+  } catch (error) { alert('❌ خطأ: ' + error.message); btn.disabled = false; btn.textContent = '💾 حفظ الحساب'; }
 }
 
 function openProductModal(){ 
   if (!checkLimit()) return;
-  openModal('إضافة صنف', `<div class="form-grid"><div class="field"><label>اسم الصنف</label><input id="pName"></div><div class="field"><label>الكمية</label><input type="number" id="pQty" value="0"></div></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveP()">💾 حفظ الصنف</button>`); 
+  openModal('إضافة صنف', `<div class="form-grid"><div class="field"><label>اسم الصنف</label><input id="pName"></div><div class="field"><label>الكمية</label><input type="number" id="pQty" value="0"></div></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveP(this)">💾 حفظ الصنف</button>`); 
 }
-async function saveP(){ 
+async function saveP(btn){ 
   if (!checkLimit()) return;
+  if(btn.disabled) return;
+  btn.disabled = true; btn.textContent = '⏳ جاري الحفظ...';
   try {
-    const n = document.getElementById('pName').value; if(!n) return alert('⚠️ يرجى كتابة اسم الصنف');
+    const n = document.getElementById('pName').value; if(!n) throw new Error('يرجى كتابة اسم الصنف');
     await db.collection('products').add({uid:currentUser.uid,name:n,qty:parseFloat(document.getElementById('pQty').value)||0}); 
     alert('✅ تم حفظ الصنف بنجاح!'); closeModal(); 
-  } catch (error) { alert('❌ خطأ: ' + error.message); }
+  } catch (error) { alert('❌ خطأ: ' + error.message); btn.disabled = false; btn.textContent = '💾 حفظ الصنف'; }
 }
 
-function openTaskModal() { openModal('مهمة جديدة', `<div class="field"><label>المهمة</label><input id="taskText" placeholder="ماذا تريد أن تفعل؟"></div><div class="form-grid"><div class="field"><label>الأولوية</label><select id="taskPriority"><option value="high">🔴 عالية</option><option value="medium" selected>🟡 متوسطة</option><option value="low">🟢 منخفضة</option></select></div><div class="field"><label>التاريخ</label><input type="date" id="taskDate" value="${today()}"></div></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveTask()">💾 حفظ المهمة</button>`); }
-async function saveTask() {
+function openTaskModal() { openModal('مهمة جديدة', `<div class="field"><label>المهمة</label><input id="taskText" placeholder="ماذا تريد أن تفعل؟"></div><div class="form-grid"><div class="field"><label>الأولوية</label><select id="taskPriority"><option value="high">🔴 عالية</option><option value="medium" selected>🟡 متوسطة</option><option value="low">🟢 منخفضة</option></select></div><div class="field"><label>التاريخ</label><input type="date" id="taskDate" value="${today()}"></div></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveTask(this)">💾 حفظ المهمة</button>`); }
+async function saveTask(btn) {
+  if(btn.disabled) return;
+  btn.disabled = true; btn.textContent = '⏳ جاري الحفظ...';
   try {
-    const text = document.getElementById('taskText').value; if(!text) return alert('⚠️ يرجى كتابة المهمة أولاً');
+    const text = document.getElementById('taskText').value; if(!text) throw new Error('يرجى كتابة المهمة أولاً');
     await db.collection('tasks').add({ uid: currentUser.uid, text, priority: document.getElementById('taskPriority').value, date: document.getElementById('taskDate').value, completed: false, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
     alert('✅ تمت إضافة المهمة بنجاح!'); closeModal();
-  } catch (error) { alert('❌ خطأ: ' + error.message); }
+  } catch (error) { alert('❌ خطأ: ' + error.message); btn.disabled = false; btn.textContent = '💾 حفظ المهمة'; }
 }
 function renderTasks() {
   const list = document.getElementById('tasksList'); if(!list) return;
@@ -1003,14 +1070,16 @@ function renderTasks() {
 }
 async function toggleTask(id, currentStatus) { await db.collection('tasks').doc(id).update({ completed: !currentStatus }); }
 
-function openNoteModal() { openModal('ملاحظة جديدة', `<div class="field"><label>العنوان</label><input id="noteTitle" placeholder="عنوان الملاحظة"></div><div class="field"><label>المحتوى</label><textarea id="noteContent" rows="4" style="padding:14px; border:1.5px solid var(--border); border-radius:10px; background:var(--bg); resize:vertical;"></textarea></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveNote()">💾 حفظ الملاحظة</button>`); }
-async function saveNote() {
+function openNoteModal() { openModal('ملاحظة جديدة', `<div class="field"><label>العنوان</label><input id="noteTitle" placeholder="عنوان الملاحظة"></div><div class="field"><label>المحتوى</label><textarea id="noteContent" rows="4" style="padding:14px; border:1.5px solid var(--border); border-radius:10px; background:var(--bg); resize:vertical;"></textarea></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveNote(this)">💾 حفظ الملاحظة</button>`); }
+async function saveNote(btn) {
+  if(btn.disabled) return;
+  btn.disabled = true; btn.textContent = '⏳ جاري الحفظ...';
   try {
     const title = document.getElementById('noteTitle').value; const content = document.getElementById('noteContent').value;
-    if(!title && !content) return alert('⚠️ يرجى كتابة عنوان أو محتوى');
+    if(!title && !content) throw new Error('يرجى كتابة عنوان أو محتوى');
     await db.collection('notes').add({ uid: currentUser.uid, title, content, date: new Date().toLocaleDateString('ar-EG'), createdAt: firebase.firestore.FieldValue.serverTimestamp() });
     alert('✅ تم حفظ الملاحظة بنجاح!'); closeModal();
-  } catch (error) { alert('❌ خطأ: ' + error.message); }
+  } catch (error) { alert('❌ خطأ: ' + error.message); btn.disabled = false; btn.textContent = '💾 حفظ الملاحظة'; }
 }
 function renderNotes() {
   const list = document.getElementById('notesList'); if(!list) return;
@@ -1094,7 +1163,7 @@ async function saveSettings() {
 
 function exportToCSV(){ if(!data.transactions.length) return alert('لا يوجد بيانات'); let csv = "\uFEFFالتاريخ,النوع,التصنيف,المبلغ,البيان\n"; data.transactions.forEach(t=>{ csv += `${t.date},${t.type==='in'?'قبض':'صرف'},${t.category||'عام'},${t.amount},${t.desc||''}\n`; }); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})); a.download = 'Report.csv'; a.click(); }
 
-// ================= لوحة التحكم (إدارة المشتركين) =================
+// ================= لوحة التحكم =================
 async function loadAdminData(){ 
   const snap = await db.collection('users').get(); 
   let h = ''; 
