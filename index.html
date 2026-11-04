@@ -304,7 +304,7 @@ tbody tr:hover td { background: var(--bg); }
       </section>
 
       <!-- لوحة التحكم -->
-      <section id="page-admin" class="page"><div class="card"><div class="card-head"><h3>👑 إدارة المشتركين</h3><button type="button" class="btn btn-sm btn-primary" onclick="loadAdminData()">🔄 تحديث</button></div><div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الخطة</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="adminTable"></tbody></table></div></div></section>
+      <section id="page-admin" class="page"><div class="card"><div class="card-head"><h3>👑 إدارة المشتركين وتفعيل الحسابات</h3><button type="button" class="btn btn-sm btn-primary" onclick="loadAdminData()">🔄 تحديث</button></div><div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الخطة</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="adminTable"></tbody></table></div></div></section>
       
       <!-- الخزينة والمصروفات -->
       <section id="page-cash" class="page">
@@ -510,6 +510,24 @@ function money(n){ return (Number(n)||0).toLocaleString('en-US') + ' ' + (data.s
 function openModal(t, b, f){ document.getElementById('modalTitle').textContent=t; document.getElementById('modalBody').innerHTML=b; document.getElementById('modalFoot').innerHTML=f||''; document.getElementById('overlay').classList.remove('hidden'); }
 function closeModal(){ document.getElementById('overlay').classList.add('hidden'); }
 
+// ================= دالة فحص الحد الأقصى للعمليات =================
+function checkLimit() {
+  if (isAdminUser) return true; // المدير بلا حدود
+  
+  // فحص الخطة المجانية
+  if (userDoc && userDoc.subscription && userDoc.subscription.plan === 'free') {
+    const totalOperations = data.invoices.length + data.transactions.length;
+    if (totalOperations >= 30) {
+      const msg = `⚠️ عذراً، لقد وصلت للحد الأقصى في النسخة التجريبية (30 عملية).\n\nللاستمرار في استخدام التطبيق بدون قيود، يرجى التواصل مع الإدارة لتفعيل حسابك.\n\nرقم الدعم: 771713275`;
+      if(confirm(msg)) {
+        window.open('https://wa.me/967771713275?text=مرحباً،%20أريد%20الترقية%20لنسخة%20ميزان%20تك%20المدفوعة%20لقد%20وصلت%20للحد%20الأقصى', '_blank');
+      }
+      return false;
+    }
+  }
+  return true;
+}
+
 // ================= الثيمات والوضع الليلي =================
 function setTheme(themeClass) {
   document.body.className = themeClass;
@@ -544,10 +562,18 @@ async function doLogin(){
     const e = document.getElementById('loginEmail').value.trim(); 
     const p = document.getElementById('loginPass').value; 
     if(!e || !p) return alert('⚠️ أدخل البريد وكلمة المرور'); 
+    
+    const btn = document.querySelector('#loginForm .btn-primary');
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ جاري الدخول...';
+    btn.disabled = true;
+
     try { 
         await auth.signInWithEmailAndPassword(e,p); 
     } catch(err) { 
         alert('❌ خطأ في الدخول: ' + err.message); 
+        btn.textContent = originalText;
+        btn.disabled = false;
     } 
 }
 
@@ -556,13 +582,17 @@ async function doRegister(){
     const e = document.getElementById('regEmail').value.trim(); 
     const p = document.getElementById('regPass').value; 
     
-    if(!n || !e || p.length < 6) return alert('⚠️ تأكد من ملء جميع البيانات (كلمة المرور 6 أحرف على الأقل)'); 
-    if(!e.includes('@') || e.includes(' ')) return alert('⚠️ يرجى كتابة البريد الإلكتروني بشكل صحيح (بدون مسافات)'); 
+    if(!n || !e || p.length < 6) return alert('⚠️ تأكد من ملء البيانات (كلمة المرور 6 أحرف على الأقل)'); 
+    if(!e.includes('@') || e.includes(' ')) return alert('⚠️ البريد الإلكتروني غير صحيح (لا تضع مسافات)'); 
+
+    const btn = document.querySelector('#registerForm .btn-primary');
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ جاري إنشاء الحساب...';
+    btn.disabled = true;
 
     try { 
         const c = await auth.createUserWithEmailAndPassword(e,p); 
         await c.user.updateProfile({displayName:n}); 
-        // تحديث هام: استخدام .doc(uid).set() ليتوافق مع قواعد الحماية الجديدة
         await db.collection('users').doc(c.user.uid).set({
             uid: c.user.uid, 
             name: n, 
@@ -570,8 +600,11 @@ async function doRegister(){
             subscription: {plan:'free', active:false}, 
             settings: {businessName:'مشروعي', currency:'ر.ي', logoBase64:'', city:'Sanaa', country:'Yemen'}
         }); 
+        alert('✅ تم إنشاء الحساب بنجاح!');
     } catch(err) { 
         alert('❌ خطأ في التسجيل: ' + err.message); 
+        btn.textContent = originalText;
+        btn.disabled = false;
     } 
 }
 
@@ -583,7 +616,6 @@ auth.onAuthStateChanged(async (u) => {
     document.getElementById('authScreen').classList.add('hidden'); 
     document.getElementById('app').classList.remove('hidden');
     
-    // تحديث هام: جلب بيانات المستخدم بواسطة الـ UID مباشرة (أسرع وأكثر أماناً)
     try {
         const userDocRef = await db.collection("users").doc(u.uid).get();
         if(userDocRef.exists){ 
@@ -601,9 +633,7 @@ auth.onAuthStateChanged(async (u) => {
                 document.getElementById('logoPreview').style.display = 'block';
             }
         }
-    } catch(err) {
-        console.log("خطأ في جلب بيانات المستخدم: ", err);
-    }
+    } catch(err) { console.log("خطأ في جلب بيانات المستخدم: ", err); }
     
     subscribeData();
     populateSurahs();
@@ -734,6 +764,7 @@ function renderInvoices() {
 }
 
 function openInvoiceModal() {
+  if (!checkLimit()) return;
   invItems = [];
   const contactsOpts = data.contacts.map(c => `<option value="${c.id}">${c.name}</option>`).join('') || '<option value="">-- لا يوجد عملاء --</option>';
   const body = `
@@ -770,6 +801,7 @@ function calcItem(el) {
 }
 
 async function saveInvoice() {
+  if (!checkLimit()) return; // <--- فحص الحد
   try {
     const contactId = document.getElementById('invContact').value;
     const contact = data.contacts.find(c => c.id === contactId);
@@ -851,9 +883,11 @@ async function deleteNote(id) { if(confirm('حذف الملاحظة؟')) await d
 
 // ================= سندات القبض والصرف =================
 function openReceiptModal() {
+  if (!checkLimit()) return;
   openModal('سند قبض (إيداع)', `<div class="field"><label>المبلغ</label><input type="number" id="rcpAmt"></div><div class="field"><label>البيان (من أين جاء المبلغ؟)</label><input id="rcpDesc" placeholder="مثال: دفعة من عميل، إيداع رأس مال..."></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveReceipt()">💾 حفظ سند القبض</button>`);
 }
 async function saveReceipt() {
+  if (!checkLimit()) return;
   try {
     const a = parseFloat(document.getElementById('rcpAmt').value);
     if(!a) return alert('⚠️ يرجى إدخال المبلغ');
@@ -861,10 +895,13 @@ async function saveReceipt() {
     alert('✅ تم حفظ سند القبض بنجاح!'); closeModal();
   } catch (error) { alert('❌ خطأ: ' + error.message); }
 }
+
 function openExpenseModal() {
+  if (!checkLimit()) return;
   openModal('سند صرف (مصروفات)', `<div class="field"><label>المبلغ</label><input type="number" id="expAmt"></div><div class="field"><label>نوع المصروف (التصنيف)</label><select id="expCategory"><option value="رواتب">رواتب وأجور</option><option value="إيجارات">إيجارات</option><option value="فواتير">فواتير (كهرباء، ماء، نت)</option><option value="مشتريات">مشتريات بضاعة</option><option value="صيانة">صيانة وإصلاحات</option><option value="تسويق">تسويق وإعلانات</option><option value="أخرى">مصروفات أخرى</option></select></div><div class="field"><label>البيان / تفاصيل المصروف</label><input id="expDesc" placeholder="مثال: راتب الشهر، فاتورة كهرباء..."></div>`, `<button class="btn" onclick="closeModal()">إلغاء</button><button class="btn btn-primary" onclick="saveExpense()">💾 حفظ سند الصرف</button>`);
 }
 async function saveExpense() {
+  if (!checkLimit()) return;
   try {
     const a = parseFloat(document.getElementById('expAmt').value);
     if(!a) return alert('⚠️ يرجى إدخال المبلغ');
@@ -910,16 +947,25 @@ async function doPay(id){
 }
 
 // ================= دوال مساعدة =================
-function openContactModal(){ openModal('إضافة حساب جديد', `<div class="form-grid"><div class="field"><label>اسم الحساب (العميل/المورد)</label><input id="cName"></div><div class="field"><label>الرصيد الافتتاحي</label><input type="number" id="cBal" value="0"></div></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveC()">💾 حفظ الحساب</button>`); }
+function openContactModal(){ 
+  if (!checkLimit()) return;
+  openModal('إضافة حساب جديد', `<div class="form-grid"><div class="field"><label>اسم الحساب (العميل/المورد)</label><input id="cName"></div><div class="field"><label>الرصيد الافتتاحي</label><input type="number" id="cBal" value="0"></div></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveC()">💾 حفظ الحساب</button>`); 
+}
 async function saveC(){ 
+  if (!checkLimit()) return;
   try {
     const n = document.getElementById('cName').value; if(!n) return alert('⚠️ يرجى كتابة اسم الحساب');
     await db.collection('contacts').add({uid:currentUser.uid, name:n, balance:parseFloat(document.getElementById('cBal').value)||0}); 
     alert('✅ تم إضافة الحساب بنجاح!'); closeModal(); 
   } catch (error) { alert('❌ خطأ: ' + error.message); }
 }
-function openProductModal(){ openModal('إضافة صنف', `<div class="form-grid"><div class="field"><label>اسم الصنف</label><input id="pName"></div><div class="field"><label>الكمية</label><input type="number" id="pQty" value="0"></div></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveP()">💾 حفظ الصنف</button>`); }
+
+function openProductModal(){ 
+  if (!checkLimit()) return;
+  openModal('إضافة صنف', `<div class="form-grid"><div class="field"><label>اسم الصنف</label><input id="pName"></div><div class="field"><label>الكمية</label><input type="number" id="pQty" value="0"></div></div>`, `<button type="button" class="btn" onclick="closeModal()">إلغاء</button><button type="button" class="btn btn-primary" onclick="saveP()">💾 حفظ الصنف</button>`); 
+}
 async function saveP(){ 
+  if (!checkLimit()) return;
   try {
     const n = document.getElementById('pName').value; if(!n) return alert('⚠️ يرجى كتابة اسم الصنف');
     await db.collection('products').add({uid:currentUser.uid,name:n,qty:parseFloat(document.getElementById('pQty').value)||0}); 
@@ -1040,8 +1086,33 @@ async function saveSettings() {
 }
 
 function exportToCSV(){ if(!data.transactions.length) return alert('لا يوجد بيانات'); let csv = "\uFEFFالتاريخ,النوع,التصنيف,المبلغ,البيان\n"; data.transactions.forEach(t=>{ csv += `${t.date},${t.type==='in'?'قبض':'صرف'},${t.category||'عام'},${t.amount},${t.desc||''}\n`; }); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})); a.download = 'Report.csv'; a.click(); }
-async function loadAdminData(){ const snap = await db.collection('users').get(); let h = ''; snap.forEach(d=>{ const u = d.data(); h += `<tr><td>${u.name}</td><td>${u.subscription?.plan}</td><td>${u.subscription?.active?'<span class="tag in">نشط</span>':'<span class="tag out">موقوف</span>'}</td><td><button type="button" class="btn btn-sm btn-primary" onclick="updateSub('${d.id}')">تفعيل</button></td></tr>`; }); document.getElementById('adminTable').innerHTML = h; }
-async function updateSub(id){ await db.collection('users').doc(id).update({'subscription.plan':'yearly','subscription.active':true}); alert('تم التفعيل'); loadAdminData(); }
+
+// ================= لوحة التحكم (إدارة المشتركين) =================
+async function loadAdminData(){ 
+  const snap = await db.collection('users').get(); 
+  let h = ''; 
+  snap.forEach(d=>{ 
+    const u = d.data(); 
+    if(u.subscription?.plan !== 'admin') {
+      h += `<tr>
+        <td>${u.name}</td>
+        <td>${u.subscription?.plan || 'free'}</td>
+        <td>${u.subscription?.active ? '<span class="tag in">نشط</span>' : '<span class="tag out">موقوف</span>'}</td>
+        <td>
+          ${u.subscription?.plan === 'free' ? `<button type="button" class="btn btn-sm btn-primary" onclick="updateSub('${d.id}')">تفعيل</button>` : `<span style="color:green; font-weight:bold;">✅ مفعل</span>`}
+        </td>
+      </tr>`; 
+    }
+  }); 
+  document.getElementById('adminTable').innerHTML = h || '<tr><td colspan="4" style="text-align:center">لا يوجد عملاء مسجلين</td></tr>'; 
+}
+
+async function updateSub(id){ 
+  if(!confirm('هل أنت متأكد من تفعيل هذا الحساب وتحويله لخطة سنوية؟')) return;
+  await db.collection('users').doc(id).update({'subscription.plan':'yearly','subscription.active':true}); 
+  alert('✅ تم تفعيل الحساب! سيتمكن العميل الآن من استخدام التطبيق بدون حدود.'); 
+  loadAdminData(); 
+}
 
 // ================= البيانات التجريبية والمسح =================
 async function loadDummyData() {
