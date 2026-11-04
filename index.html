@@ -9,7 +9,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-<style>
+<style> 
 /* ================= الثيمات (جذابة ومتعددة) ================= */
 :root, body.theme-emerald {
   --primary:#10b981; --primary-dark:#059669; --primary-light:#d1fae5;
@@ -827,6 +827,17 @@ async function saveP(){ const n=document.getElementById('pName').value; if(!n) r
 function exportToCSV(){ if(!data.transactions.length) return alert('لا يوجد بيانات'); let csv = "\uFEFFالتاريخ,النوع,المبلغ,البيان\n"; data.transactions.forEach(t=>{ csv += `${t.date},${t.type==='in'?'وارد':'صادر'},${t.amount},${t.desc||''}\n`; }); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})); a.download = 'Report.csv'; a.click(); }
 async function loadAdminData(){ const snap = await db.collection('users').get(); let h = ''; snap.forEach(d=>{ const u = d.data(); h += `<tr><td>${u.name}</td><td>${u.subscription?.plan}</td><td>${u.subscription?.active?'<span class="tag in">نشط</span>':'<span class="tag out">موقوف</span>'}</td><td><button type="button" class="btn btn-sm btn-primary" onclick="updateSub('${d.id}')">تفعيل</button></td></tr>`; }); document.getElementById('adminTable').innerHTML = h; }
 async function updateSub(id){ await db.collection('users').doc(id).update({'subscription.plan':'yearly','subscription.active':true}); alert('تم التفعيل'); loadAdminData(); }
+</script>
+  
+  <script>
+  // تسجيل Service Worker ليعمل التطبيق بدون إنترنت
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => console.log('Service Worker يعمل بنجاح!'))
+        .catch(err => console.log('فشل تسجيل Service Worker:', err));
+    });
+  }
 </script>
 </body>
 </html>
